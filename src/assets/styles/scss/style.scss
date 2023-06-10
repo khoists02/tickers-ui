@@ -88,8 +88,9 @@ Waves
 @import 'projects';
 @import 'waves';
 
-@import '../css/color_theme.css';
-@import '../css/style_rtl.css';
+// @import '../css/vendors_css.css';
+@import '../css/style.css';
+@import '../css/skin_color.css';
 
 @import '../../icons/font-awesome/css/font-awesome.css';
 // @import '../../../../assets/icons/Ionicons/css/ionicons.css';
