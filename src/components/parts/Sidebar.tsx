@@ -1,5 +1,22 @@
 import React, { type FunctionComponent } from "react";
 import { LogoLetter } from "../../constants";
+import { NavLink } from "react-router-dom";
+
+interface INavBarItem {
+  path: string;
+  name: string;
+}
+
+const items: INavBarItem[] = [
+  {
+    path: "/Dashboard",
+    name: "Dashboard",
+  },
+  {
+    path: "/Tickers",
+    name: "Tickers",
+  },
+];
 
 export const Sidebar: FunctionComponent = () => {
   return (
@@ -23,17 +40,25 @@ export const Sidebar: FunctionComponent = () => {
         <div className="multinav">
           <div className="multinav-scroll ps" style={{ height: "97%" }}>
             <ul className="sidebar-menu tree">
-              <li className="header">Main Menu</li>
-              <li className="active">
-                <a href="index.html">
-                  <i className="icon-Layout-4-blocks">
-                    <span className="path1"></span>
-                    <span className="path2"></span>
-                  </i>
-                  <span>Dashboard</span>
-                </a>
-              </li>
-              <li className="treeview">
+              {items.map((item) => {
+                return (
+                  <li
+                    className={
+                      window.location.pathname === item.path ? "active" : ""
+                    }
+                    key={item.path}
+                  >
+                    <NavLink to={item.path}>
+                      <i className="icon-Layout-4-blocks">
+                        <span className="path1"></span>
+                        <span className="path2"></span>
+                      </i>
+                      <span>{item.name}</span>
+                    </NavLink>
+                  </li>
+                );
+              })}
+              {/* <li className="treeview">
                 <a href="#">
                   <i className="icon-Library">
                     <span className="path1"></span>
@@ -105,7 +130,7 @@ export const Sidebar: FunctionComponent = () => {
                     </ul>
                   </li>
                 </ul>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
