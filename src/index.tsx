@@ -3,15 +3,23 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import setupAxiosInterceptors from "./config/axios-interceptor";
+import store from "./config/store";
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+setupAxiosInterceptors(store);
+
 root.render(
   <BrowserRouter>
     <React.StrictMode>
       <React.Suspense fallback={<span>Loading...</span>}>
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </React.Suspense>
     </React.StrictMode>
   </BrowserRouter>
