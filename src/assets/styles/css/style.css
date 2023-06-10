@@ -44069,7 +44069,7 @@ body .main-header .navbar .nav>li.search-box>a:focus {
   @media (min-width: 576px) {
     .card-columns {
       column-count: 3;
-      column-gap: calc($default-gutter-width / 2);
+      /* column-gap: calc($default-gutter-width / 2); */
       orphans: 1;
       widows: 1;
     }
@@ -44504,5 +44504,4 @@ body .main-header .navbar .nav>li.search-box>a:focus {
   .waves-effect .waves-ripple {
     z-index: -1;
   }
-
-  /*# sourceMappingURL=style.css.map */
+}
