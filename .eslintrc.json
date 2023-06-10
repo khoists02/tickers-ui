@@ -43,6 +43,9 @@
         "semi": "off",
         "@typescript-eslint/semi": "off",
         "space-before-function-paren": "off",
-        "@typescript-eslint/space-before-function-paren": "off"
+        "@typescript-eslint/space-before-function-paren": "off",
+        "@typescript-eslint/consistent-type-imports": "off",
+        "comma-dangle": "off",
+        "@typescript-eslint/comma-dangle": "off"
     }
 }
