@@ -108,3 +108,20 @@ Waves
 
 // @import '../../../../assets/vendor_components/animate/animate.css';
 @import '~bootstrap/scss/bootstrap.scss';
+
+.lookup-circle.lookup-right input {
+  border: 1px solid;
+  height: 35px;
+  line-height: 35px;
+}
+
+.lookup-circle.lookup-right input::placeholder {
+  color: #f1f1f1;
+}
+
+.dark-skin .dropdown-item {
+  &.active {
+    background-color: #162f5b;
+    color: #b5b5c3;
+  }
+}
