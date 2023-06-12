@@ -3,7 +3,11 @@ import { ITickerFilterSearch } from "./tickerType";
 import useTickerTypeDropdown from "../../hooks/useTickerTypeDropdown";
 import { Dropdown, IOption } from "../../components/Dropdown";
 import { useAppDispatch } from "../../config/store";
-import { getTickers } from "./ducks/operators";
+import {
+  ISearchTickersParam,
+  defaultSearchTickersParam,
+  getTickers,
+} from "./ducks/operators";
 
 interface ITickersFilter {
   onFilter: (filter?: ITickerFilterSearch) => void;
@@ -78,52 +82,87 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
       value: "indices",
     },
   ];
-  const [searchKey, setSearchKey] = useState("");
-  const [ticker, setTicker] = useState("");
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useState<ISearchTickersParam>(
+    defaultSearchTickersParam
+  );
 
   return (
     <div className="box">
       <div className="box-body p-0">
         <div className="flexbox align-items-center p-15">
           <div className="flexbox align-items-center">
-            <Dropdown label="Type" option={tickerTypesOption} />
-            <Dropdown label="Market" option={tickerMarketOption} />
-            <Dropdown label="Order" option={orderOptions} />
-            <Dropdown label="Sort" option={sortOptions} />
             <Dropdown
+              label="Type"
+              option={tickerTypesOption}
+              onChange={(item: IOption) => {
+                setSearchParams({ ...searchParams, type: item.value });
+              }}
+            />
+            <Dropdown
+              label="Market"
+              option={tickerMarketOption}
+              onChange={(item: IOption) => {
+                setSearchParams({ ...searchParams, market: item.value });
+              }}
+            />
+            <Dropdown
+              label="Order"
+              option={orderOptions}
+              onChange={(item: IOption) => {
+                setSearchParams({ ...searchParams, order: item.value });
+              }}
+            />
+            <Dropdown
+              label="Sort"
+              option={sortOptions}
+              onChange={(item: IOption) => {
+                setSearchParams({ ...searchParams, sort: item.value });
+              }}
+            />
+            <Dropdown
+              onChange={(item: IOption) => {
+                setSearchParams({
+                  ...searchParams,
+                  limit: parseInt(item.value, 10),
+                });
+              }}
               label="Limit"
               option={limitOptions}
-              defaultSelected={limitOptions.find((x) => x.value === "100")}
+              defaultSelected={limitOptions.find(
+                (x) => x.value === searchParams.limit?.toString()
+              )}
             />
           </div>
 
           <div className="flexbox">
-            <div className="lookup lookup-circle lookup-right">
+            <div className="input-group">
               <input
-                value={ticker}
+                value={searchParams.ticker}
                 onChange={(e) => {
-                  setTicker(e.target.value);
+                  setSearchParams({ ...searchParams, ticker: e.target.value });
                 }}
                 placeholder="Ticker"
                 type="text"
+                className="form-control"
               />
             </div>
-            <div className="lookup lookup-circle lookup-right">
+            <div className="input-group">
               <input
-                value={searchKey}
+                value={searchParams.search}
                 onChange={(e) => {
-                  setSearchKey(e.target.value);
+                  setSearchParams({ ...searchParams, search: e.target.value });
                 }}
                 placeholder="Search Key"
                 type="text"
+                className="form-control"
               />
             </div>
           </div>
 
           <button
             onClick={() => {
-              dispatch(getTickers());
+              dispatch(getTickers(searchParams));
             }}
             type="button"
             className="waves-effect waves-light btn btn-primary"

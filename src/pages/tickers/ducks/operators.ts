@@ -4,20 +4,34 @@ import axios from "axios";
 import { AppThunk } from "../../../config/store";
 import { TickersAction } from "./slices";
 
+export interface ISearchTickersParam {
+  search?: string;
+  ticker?: string;
+  type?: string;
+  limit?: number;
+  sort?: string;
+  order?: string;
+  market?: string;
+}
+
+export const defaultSearchTickersParam: Readonly<ISearchTickersParam> = {
+  search: "",
+  type: "",
+  ticker: "",
+  market: "",
+  sort: "",
+  order: "",
+  limit: 100
+}
+
 export const getTickers =
-  (): AppThunk =>
+  (params?: ISearchTickersParam): AppThunk =>
     async (dispatch) => {
       try {
         dispatch(TickersAction.getTickersStart());
-        const requestParams = {
-          search: "",
-          type: "",
-          ticker: "",
-          limit: 100
-        };
 
         const studies = await axios.get("/tickers", {
-          params: requestParams,
+          params,
         });
         dispatch(
           TickersAction.getTickersSuccess(

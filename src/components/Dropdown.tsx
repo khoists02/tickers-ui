@@ -9,12 +9,14 @@ interface IDropdown {
   option: IOption[];
   label?: string;
   defaultSelected?: IOption;
+  onChange: (item: IOption) => void;
 }
 
 export const Dropdown: FC<IDropdown> = ({
   option = [],
   label,
   defaultSelected,
+  onChange,
 }) => {
   const [selected, setSelected] = useState<IOption | undefined>(
     defaultSelected
@@ -50,6 +52,7 @@ export const Dropdown: FC<IDropdown> = ({
               onClick={() => {
                 setSelected(item);
                 setShow(false);
+                onChange(item);
               }}
             >
               <span className="badge badge-ring badge-danger me-1"></span>{" "}
