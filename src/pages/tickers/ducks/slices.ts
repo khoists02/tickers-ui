@@ -9,17 +9,17 @@ const tickersSlice = createSlice({
   name: "tickersReducer",
   initialState,
   reducers: {
-    getStudiesStart(state) {
+    getTickersStart(state) {
       state.loading = true;
     },
-    getStudiesSuccess(
+    getTickersSuccess(
       state,
       action,
     ) {
       state.loading = false;
       state.entities = action.payload;
     },
-    getStudiesFail(state) {
+    getTickersFail(state) {
       state.loading = false;
     },
   },

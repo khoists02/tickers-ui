@@ -13,7 +13,11 @@ const App: FC = () => {
 
     getCsrfToken();
   }, []);
-  return <AppRoutes />;
+  return (
+    <>
+      <AppRoutes />;
+    </>
+  );
 };
 
 export default App;

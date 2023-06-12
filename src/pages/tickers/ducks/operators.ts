@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import axios from "axios";
 import { AppThunk } from "../../../config/store";
 import { TickersAction } from "./slices";
@@ -6,7 +8,7 @@ export const getTickers =
   (): AppThunk =>
     async (dispatch) => {
       try {
-        dispatch(TickersAction.getStudiesStart());
+        dispatch(TickersAction.getTickersStart());
         const requestParams = {
           search: "",
           type: "",
@@ -18,11 +20,11 @@ export const getTickers =
           params: requestParams,
         });
         dispatch(
-          TickersAction.getStudiesSuccess(
+          TickersAction.getTickersSuccess(
             studies.data.results
           )
         );
-      } catch (err) {
-        dispatch(TickersAction.getStudiesFail());
+      } catch (error) {
+        dispatch(TickersAction.getTickersFail());
       }
     };

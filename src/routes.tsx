@@ -5,6 +5,7 @@ import { Header } from "./components/parts/Header";
 import { Sidebar } from "./components/parts/Sidebar";
 import { Footer } from "./components/parts/Footer";
 import { PageNotFound } from "./components/PageNotFound";
+import ApiError from "./components/ApiError";
 
 const combinedRoutes = [TickersRouter];
 
@@ -28,6 +29,7 @@ const generateRoute = (routes: IRoute[]): React.ReactElement => {
 const MainLayout = (): JSX.Element => {
   return (
     <>
+      <ApiError />
       <div className="wrapper" style={{ height: "auto", minHeight: "100%" }}>
         <div id="loader" style={{ opacity: "0.05", display: "none" }}></div>
         <Header />
