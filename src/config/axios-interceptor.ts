@@ -7,6 +7,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
 } from "axios";
+import { ErrorAction } from "../reducers/errorSlice";
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry: boolean;
@@ -39,11 +40,12 @@ const setupAxiosInterceptors = (store: any): void => {
         code: 502,
         message: "Unable to connect to API, please try again.",
       };
-      // store.dispatch(ErrorAction.setError([errorMessage]));
-      console.log({ errorMessage });
+      store.dispatch(ErrorAction.setError([errorMessage]));
+      return await Promise.reject();
+    } else {
+      store.dispatch(ErrorAction.setError([err.response?.data]));
       return await Promise.reject();
     }
-    return await Promise.reject(err);
   };
   axios.interceptors.request.use(onRequestSuccess);
   axios.interceptors.response.use(onResponseSuccess, onResponseError);

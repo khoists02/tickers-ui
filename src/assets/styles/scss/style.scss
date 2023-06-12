@@ -125,3 +125,12 @@ Waves
     color: #b5b5c3;
   }
 }
+
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 1px;
+  display: block;
+  width: auto;
+}
