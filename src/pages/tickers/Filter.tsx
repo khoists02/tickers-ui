@@ -1,7 +1,9 @@
 import React, { type FC, useState } from "react";
 import { ITickerFilterSearch } from "./tickerType";
-// import useTickerTypeDropdown from "../../hooks/useTickerTypeDropdown";
+import useTickerTypeDropdown from "../../hooks/useTickerTypeDropdown";
 import { Dropdown, IOption } from "../../components/Dropdown";
+import { useAppDispatch } from "../../config/store";
+import { getTickers } from "./ducks/operators";
 
 interface ITickersFilter {
   onFilter: (filter?: ITickerFilterSearch) => void;
@@ -53,10 +55,32 @@ const limitOptions: IOption[] = [
 ];
 
 export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
-  const tickerTypesOption: IOption[] = [];
-  const tickerMarketOption: IOption[] = [];
+  const tickerTypesOption: IOption[] = useTickerTypeDropdown();
+  const tickerMarketOption: IOption[] = [
+    {
+      label: "Stocks",
+      value: "stocks",
+    },
+    {
+      label: "Crypto",
+      value: "crypto",
+    },
+    {
+      label: "Fx",
+      value: "fx",
+    },
+    {
+      label: "Otc",
+      value: "otc",
+    },
+    {
+      label: "Indices",
+      value: "indices",
+    },
+  ];
   const [searchKey, setSearchKey] = useState("");
   const [ticker, setTicker] = useState("");
+  const dispatch = useAppDispatch();
 
   return (
     <div className="box">
@@ -98,6 +122,9 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
           </div>
 
           <button
+            onClick={() => {
+              dispatch(getTickers());
+            }}
             type="button"
             className="waves-effect waves-light btn btn-primary"
           >
