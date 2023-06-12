@@ -23,15 +23,9 @@ axios.defaults.withCredentials = true;
 
 const setupAxiosInterceptors = (store: any): void => {
   const onRequestSuccess = (config: InternalAxiosRequestConfig) => {
-    const token = store.getState().loginReducer?.csrfToken;
-    // const lang =
-    //   store.getState().loginReducer?.account?.localisation?.locale ||
-    //   window.navigator.language;
+    const token = store.getState().authReducer?.token;
     if (token) {
       axios.defaults.headers.common["X-XSRF-TOKEN"] = token;
-      // axios.defaults.headers.common["Accept-Language"] = lang;
-      // axios.defaults.headers.common["X-TZ"] =
-      //   Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
     return config;
   };
