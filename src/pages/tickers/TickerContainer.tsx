@@ -20,15 +20,18 @@ const TickersContainer: FunctionComponent = () => {
           <div className="row">
             {entities.map((entity) => {
               return (
-                <div key={entity["name"]} className="col-lg-4 col-12">
+                <div
+                  key={entity["name"]}
+                  className="col-lg-4 col-12 cursor-pointer"
+                >
                   <div className="box no-shadow no-border bg-lightest">
                     <div className="box-body">
-                      <h2
+                      <h4
                         className="fw-600 text-primary text-overflow"
                         title={entity["name"]}
                       >
                         {entity["name"]}
-                      </h2>
+                      </h4>
                       <p className="text-mute mb-0">This Week</p>
                       <p className="text-success mb-0">
                         <i className="fa fa-arrow-up"></i> {entity["ticker"]}
@@ -38,6 +41,7 @@ const TickersContainer: FunctionComponent = () => {
                 </div>
               );
             })}
+            {entities?.length === 0 && <span>No Results</span>}
           </div>
         </BlockUI>
       </div>
