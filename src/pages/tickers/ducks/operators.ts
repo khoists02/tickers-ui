@@ -3,7 +3,13 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import axios from "axios";
 import { AppThunk } from "../../../config/store";
-import { ITickerResponse, PaginationPolygonResponse, TickersAction } from "./slices";
+import {
+  ITickerDetails,
+  ITickerResponse,
+  PaginationPolygonResponse,
+  TickerDetailsResponse,
+  TickersAction,
+} from "./slices";
 
 export interface ISearchTickersParam {
   search?: string;
@@ -46,9 +52,9 @@ export const getTickers =
               currencyName: x["currency_name"],
               lastUpdated: x["last_updated_utc"],
               primaryExchange: x["primary_exchange"],
-            }
-          })
-        }
+            };
+          }),
+        };
 
         dispatch(TickersAction.getTickersSuccess(response));
       } catch (error) {
@@ -73,5 +79,31 @@ export const getTickersPagination =
         dispatch(TickersAction.getTickersSuccess(studies.data));
       } catch (error) {
         dispatch(TickersAction.getTickersFail());
+      }
+    };
+export const getTickerDetails =
+  (ticker?: string, date?: string): AppThunk =>
+    async (dispatch) => {
+      try {
+        dispatch(TickersAction.getDetailsStart());
+        const details = await axios.get(`/tickers/${ticker || ""}`);
+        const response: TickerDetailsResponse<ITickerDetails> = {
+          status: details?.data.status,
+          requestId: details?.data ? details.data["request_id"] : "",
+          results: details?.data
+            ? {
+                ...details?.data.results,
+                primaryExchange: details?.data.results["primary_exchange"],
+                totalEmployees: details?.data.results["total_employees"],
+                marketCap: details?.data.results["market_cap"],
+                currencyName: details?.data.results["currency_name"],
+                iconUrl: details?.data.results["branding"]["icon_url"]?.replace("https://", ""),
+                logoUrl: details?.data.results["branding"]["logo_url"]?.replace("https://", ""),
+              }
+            : null,
+        };
+        dispatch(TickersAction.getDetailsSuccess(response));
+      } catch (error) {
+        dispatch(TickersAction.getDetailsFail());
       }
     };

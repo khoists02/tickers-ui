@@ -7,8 +7,10 @@ import { BlockUI } from "../../components/BlockUI";
 import { useAppDispatch } from "../../config/store";
 import { getTickersPagination } from "./ducks/operators";
 import { formatDate } from "../../utils/date";
+import { useNavigate } from "react-router-dom";
 
 const TickersContainer: FunctionComponent = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { entities, loading, pagination } = useSelector(
     (state: IRootState) => state.tickersReducer
@@ -43,6 +45,9 @@ const TickersContainer: FunctionComponent = () => {
                 <div
                   key={entity.name}
                   className="col-lg-4 col-12 cursor-pointer"
+                  onClick={() => {
+                    navigate(`/Tickers/${entity.ticker || ""}`);
+                  }}
                 >
                   <div
                     className={`box no-shadow no-border ${
@@ -56,13 +61,14 @@ const TickersContainer: FunctionComponent = () => {
                       >
                         {entity.name}
                       </h4>
-                      <p className="text-mute mb-0">This Week</p>
+                      <p className="badge badge-Light mb-0">This Week</p>
                       <p className="text-success mb-0">
                         <i className="fa fa-arrow-up"></i> {entity.ticker} -{" "}
                         {entity.type}
                       </p>
                       <p className="text-success mb-0">
-                        <i className="fa fa-money"></i> {entity.currencyName}
+                        <i className="fa fa-money"></i>{" "}
+                        {entity.currencyName?.toUpperCase()}
                       </p>
 
                       <p className="text-success mb-0">
@@ -70,7 +76,7 @@ const TickersContainer: FunctionComponent = () => {
                         {formatDate(entity.lastUpdated || "")}
                       </p>
                       {entity.primaryExchange && (
-                        <p className="text-success mb-0">
+                        <p className="badge badge-primary mb-0">
                           <i className="fa fa-exchange"></i>{" "}
                           {entity.primaryExchange}
                         </p>

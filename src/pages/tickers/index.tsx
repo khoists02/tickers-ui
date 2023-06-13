@@ -21,6 +21,9 @@ import { AuthRoute } from "../../components/AuthRoute";
 import { PageNotFound } from "../../components/PageNotFound";
 
 const Tickers = React.lazy(async () => await import("./TickerContainer"));
+const TickerDetails = React.lazy(
+  async () => await import("./TickerDetailsContainer")
+);
 
 export interface IAuthRoute {
   element?: React.ReactElement;
@@ -33,6 +36,12 @@ const routes: IAuthRoute[] = [
   {
     path: "/",
     element: <Tickers />,
+    can: [],
+    index: true,
+  },
+  {
+    path: ":ticker",
+    element: <TickerDetails />,
     can: [],
     index: true,
   },
