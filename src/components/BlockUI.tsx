@@ -10,7 +10,6 @@ export const BlockUI: FC<IBlockUI> = ({ loading = false, children }) => {
   const BlockElement = (): React.ReactElement => {
     return (
       <>
-        {children}
         <div className="full-width" style={{ zIndex: 1000 }}>
           <ThreeDots
             height="50"
@@ -23,6 +22,7 @@ export const BlockUI: FC<IBlockUI> = ({ loading = false, children }) => {
             visible={true}
           />
         </div>
+        {children}
       </>
     );
   };

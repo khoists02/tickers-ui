@@ -4,9 +4,13 @@ import { TickersFilter } from "./Filter";
 import { IRootState } from "../../config/reducers";
 import { useSelector } from "react-redux";
 import { BlockUI } from "../../components/BlockUI";
+import { useAppDispatch } from "../../config/store";
+import { getTickersPagination } from "./ducks/operators";
+import { formatDate } from "../../utils/date";
 
 const TickersContainer: FunctionComponent = () => {
-  const { entities, loading } = useSelector(
+  const dispatch = useAppDispatch();
+  const { entities, loading, pagination } = useSelector(
     (state: IRootState) => state.tickersReducer
   );
   return (
@@ -18,24 +22,59 @@ const TickersContainer: FunctionComponent = () => {
 
         <BlockUI loading={loading}>
           <div className="row">
+            {pagination.nextPage && (
+              <div className="col-lg-12">
+                <ul className="pagination">
+                  <li
+                    className="paginate_button page-item next"
+                    id="example6_previous"
+                    onClick={() => {
+                      dispatch(getTickersPagination(pagination.cursor));
+                    }}
+                  >
+                    <a className="page-link">Next</a>
+                    <a>{pagination.count}</a>
+                  </li>
+                </ul>
+              </div>
+            )}
             {entities.map((entity) => {
               return (
                 <div
-                  key={entity["name"]}
+                  key={entity.name}
                   className="col-lg-4 col-12 cursor-pointer"
                 >
-                  <div className="box no-shadow no-border bg-lightest">
+                  <div
+                    className={`box no-shadow no-border ${
+                      entity.active ? "bg-lightest" : "bg-danger"
+                    }`}
+                  >
                     <div className="box-body">
                       <h4
                         className="fw-600 text-primary text-overflow"
-                        title={entity["name"]}
+                        title={entity.name}
                       >
-                        {entity["name"]}
+                        {entity.name}
                       </h4>
                       <p className="text-mute mb-0">This Week</p>
                       <p className="text-success mb-0">
-                        <i className="fa fa-arrow-up"></i> {entity["ticker"]}
+                        <i className="fa fa-arrow-up"></i> {entity.ticker} -{" "}
+                        {entity.type}
                       </p>
+                      <p className="text-success mb-0">
+                        <i className="fa fa-money"></i> {entity.currencyName}
+                      </p>
+
+                      <p className="text-success mb-0">
+                        <i className="fa fa-calendar"></i>{" "}
+                        {formatDate(entity.lastUpdated || "")}
+                      </p>
+                      {entity.primaryExchange && (
+                        <p className="text-success mb-0">
+                          <i className="fa fa-exchange"></i>{" "}
+                          {entity.primaryExchange}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
