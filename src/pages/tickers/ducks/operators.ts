@@ -99,6 +99,7 @@ export const getTickerDetails =
                 currencyName: details?.data.results["currency_name"],
                 iconUrl: details?.data.results["branding"]["icon_url"]?.replace("https://", ""),
                 logoUrl: details?.data.results["branding"]["logo_url"]?.replace("https://", ""),
+                shareClassOutstanding: details?.data.results["share_class_shares_outstanding"]
               }
             : null,
         };

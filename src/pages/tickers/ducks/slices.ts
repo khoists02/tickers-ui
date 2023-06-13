@@ -42,6 +42,7 @@ export interface ITickerDetails {
   type?: string;
   iconUrl?: string;
   logoUrl?: string;
+  shareClassOutstanding?: number;
 }
 
 export interface TickerDetailsResponse<T> {
