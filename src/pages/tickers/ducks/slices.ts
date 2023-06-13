@@ -28,10 +28,34 @@ const defaultPagination = {
   count: 0,
 }
 
+export interface ITickerDetails {
+  cik?: string;
+  currencyName?: string;
+  description?: string;
+  locale?: string;
+  market?: string;
+  marketCap?: string;
+  name?: string;
+  primaryExchange?: string;
+  ticker?: string;
+  totalEmployees?: number;
+  type?: string;
+  iconUrl?: string;
+  logoUrl?: string;
+  shareClassOutstanding?: number;
+}
+
+export interface TickerDetailsResponse<T> {
+  requestId?: string;
+  status?: string;
+  results: T
+}
+
 const initialState = {
   loading: false,
   entities: [] as ITickerResponse[],
-  pagination: defaultPagination
+  pagination: defaultPagination,
+  entity: null as ITickerDetails | null,
 };
 
 const tickersSlice = createSlice({
@@ -58,6 +82,19 @@ const tickersSlice = createSlice({
       }
     },
     getTickersFail(state) {
+      state.loading = false;
+    },
+    getDetailsStart(state) {
+      state.loading = true;
+    },
+    getDetailsSuccess(
+      state,
+      action: PayloadAction<TickerDetailsResponse<ITickerDetails>>,
+    ) {
+      state.loading = false;
+      state.entity = action.payload.results;
+    },
+    getDetailsFail(state) {
       state.loading = false;
     },
   },
