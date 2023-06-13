@@ -1,8 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+
+export interface ITickerResponse {
+  active?: boolean;
+  cik?: string;
+  currencyName?: string;
+  lastUpdated?: string;
+  locale?: string;
+  market?: string;
+  name?: string;
+  primaryExchange?: string;
+  ticker?: string;
+  type?: string;
+}
+
+export interface PaginationPolygonResponse<T> {
+  count?: number;
+  nextPage?: boolean;
+  nextUrl?: string;
+  requestId?: string;
+  status?: string;
+  results: T[]
+}
+
+const defaultPagination = {
+  nextPage: false,
+  cursor: "",
+  count: 0,
+}
 
 const initialState = {
   loading: false,
-  entities: [],
+  entities: [] as ITickerResponse[],
+  pagination: defaultPagination
 };
 
 const tickersSlice = createSlice({
@@ -14,10 +43,19 @@ const tickersSlice = createSlice({
     },
     getTickersSuccess(
       state,
-      action,
+      action: PayloadAction<PaginationPolygonResponse<ITickerResponse>>,
     ) {
       state.loading = false;
-      state.entities = action.payload;
+      state.entities = action.payload.results;
+      if (action.payload.nextPage) {
+        state.pagination = {
+          nextPage: true,
+          cursor: action.payload.nextUrl || "",
+          count: action.payload.count || 0
+        }
+      } else {
+        state.pagination = defaultPagination;
+      }
     },
     getTickersFail(state) {
       state.loading = false;

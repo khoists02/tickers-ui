@@ -14,7 +14,7 @@ const useTickerTypeDropdown = (): IOption[] => {
       };
       const data = await axios.get("/tickers/types", { params });
       setTypes(
-        data.data.results.map((x: { code: string }) => {
+        data?.data?.results?.map((x: { code: string }) => {
           return {
             label: x.code,
             value: x.code,
