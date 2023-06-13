@@ -47,14 +47,10 @@ const tickersSlice = createSlice({
     ) {
       state.loading = false;
       state.entities = action.payload.results;
-      if (action.payload.nextPage) {
-        state.pagination = {
-          nextPage: true,
-          cursor: action.payload.nextUrl || "",
-          count: action.payload.count || 0
-        }
-      } else {
-        state.pagination = defaultPagination;
+      state.pagination = {
+        nextPage: action.payload.nextPage || false,
+        cursor: action.payload.nextUrl || "",
+        count: action.payload.count || 0
       }
     },
     getTickersFail(state) {

@@ -22,22 +22,27 @@ const TickersContainer: FunctionComponent = () => {
 
         <BlockUI loading={loading}>
           <div className="row">
-            {pagination.nextPage && (
-              <div className="col-lg-12">
-                <ul className="pagination">
-                  <li
-                    className="paginate_button page-item next"
-                    id="example6_previous"
-                    onClick={() => {
-                      dispatch(getTickersPagination(pagination.cursor));
-                    }}
-                  >
-                    <a className="page-link">Next</a>
-                    <a>{pagination.count}</a>
-                  </li>
-                </ul>
-              </div>
-            )}
+            <div className="col-lg-12">
+              <ul className="pagination">
+                <li
+                  className="paginate_button page-item next"
+                  id="example6_previous"
+                >
+                  {" "}
+                  {pagination.nextPage && (
+                    <a
+                      onClick={() => {
+                        dispatch(getTickersPagination(pagination.cursor));
+                      }}
+                      className="page-link"
+                    >
+                      Next
+                    </a>
+                  )}
+                  {entities.length > 0 && <a>{pagination.count}</a>}
+                </li>
+              </ul>
+            </div>
             {entities.map((entity) => {
               return (
                 <div
