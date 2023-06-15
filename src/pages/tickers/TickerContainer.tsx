@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-confusing-void-expression */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/dot-notation */
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState, useRef } from "react";
 import { TickersFilter } from "./Filter";
 import { IRootState } from "../../config/reducers";
 import { useSelector } from "react-redux";
@@ -8,13 +13,76 @@ import { useAppDispatch } from "../../config/store";
 import { getTickersPagination } from "./ducks/operators";
 import { formatDate } from "../../utils/date";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getCsrfToken } from "../auth/ducks/opertators";
+
+interface IStockResponse {
+  id?: string;
+  ticker?: string;
+}
 
 const TickersContainer: FunctionComponent = () => {
+  const intervalIdRef = useRef<NodeJS.Timeout>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [count, setCount] = useState(0);
   const { entities, loading, pagination } = useSelector(
     (state: IRootState) => state.tickersReducer
   );
+  const { token } = useSelector((state: IRootState) => state.authReducer);
+  const [tickers, setTickers] = useState<IStockResponse[]>([]);
+  useEffect(() => {
+    setCount(tickers.length);
+  }, [tickers]);
+  useEffect(() => {
+    const getTickers = async () => {
+      const response = await axios.get("/stocks?type=CS");
+      const result: IStockResponse[] = response.data["tickers"];
+      setTickers(result);
+    };
+    getTickers();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const intervalSeconds = 15; // 5s
+
+  const [timeCount, setTimeCount] = useState(0);
+
+  useEffect(() => {
+    if (intervalIdRef.current) {
+      clearInterval(intervalIdRef.current);
+    }
+    if (intervalSeconds > 0) {
+      intervalIdRef.current = setInterval(async () => {
+        if (timeCount === 10) window.location.reload();
+        if (count !== 0) {
+          if (token) {
+            try {
+              axios.defaults.headers.common["X-XSRF-TOKEN"] = token;
+              await axios.post(
+                `/tickers/${tickers[count - 1].ticker as string}`
+              );
+              setCount(count - 1);
+              setTimeCount(timeCount + 1);
+            } catch (error) {
+              clearInterval(intervalIdRef.current);
+              window.location.reload();
+            }
+          } else {
+            dispatch(getCsrfToken());
+          }
+        }
+      }, intervalSeconds * 1000);
+    }
+  }, [intervalSeconds, tickers, count, token, timeCount]);
   return (
     <>
       <div className="row">

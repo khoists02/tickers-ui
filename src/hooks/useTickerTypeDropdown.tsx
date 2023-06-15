@@ -8,19 +8,8 @@ const useTickerTypeDropdown = (): IOption[] => {
   const [types, setTypes] = useState<IOption[] | undefined>(undefined);
   useEffect(() => {
     const getTickerTypes = async () => {
-      const params = {
-        asset_class: "",
-        locale: "",
-      };
-      const data = await axios.get("/tickers/types", { params });
-      setTypes(
-        data?.data?.results?.map((x: { code: string }) => {
-          return {
-            label: x.code,
-            value: x.code,
-          };
-        })
-      );
+      const data = await axios.get("/tickers/types");
+      setTypes(data?.data?.content || []);
     };
     if (types == null) getTickerTypes();
   }, [types]);
