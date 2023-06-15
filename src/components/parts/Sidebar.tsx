@@ -16,6 +16,10 @@ const items: INavBarItem[] = [
     path: "/Tickers",
     name: "Tickers",
   },
+  {
+    path: "/Migrations",
+    name: "Migrations",
+  },
 ];
 
 export const Sidebar: FunctionComponent = () => {
