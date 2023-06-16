@@ -1,4 +1,4 @@
-import React, { type FC, useState } from "react";
+import React, { type FC, useState, useEffect } from "react";
 
 export interface IOption {
   label: string;
@@ -22,6 +22,9 @@ export const Dropdown: FC<IDropdown> = ({
     defaultSelected
   );
   const [show, setShow] = useState<boolean>(false);
+  useEffect(() => {
+    setSelected(defaultSelected);
+  }, [defaultSelected]);
   return (
     <div className="dropdown">
       <button
