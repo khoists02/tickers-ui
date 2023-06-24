@@ -28,7 +28,7 @@ const TickersContainer: FunctionComponent = () => {
                   key={entity.tickerDetails?.name}
                   className="col-lg-4 col-12 cursor-pointer"
                   onClick={() => {
-                    navigate(`/Tickers/${entity.tickerDetails?.ticker || ""}`);
+                    navigate(`/Tickers/${entity.tickerDetails?.id || ""}`);
                   }}
                 >
                   <div
@@ -69,7 +69,9 @@ const TickersContainer: FunctionComponent = () => {
                 </div>
               );
             })}
-            {entities?.length === 0 && <span>No Results</span>}
+            <div className="col-md-12">
+              {entities?.length === 0 && <span>No Results</span>}
+            </div>
           </div>
         </BlockUI>
       </div>

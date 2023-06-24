@@ -142,3 +142,16 @@ Waves
 .svg-content>svg {
   width: 100px;
 }
+
+.table-responsive {
+  overflow-x: hidden !important;
+}
+
+.table> :not(caption)>*>* {
+  background-color: unset;
+  color: unset;
+}
+
+.dark-skin .table-bordered>thead>tr>th {
+  text-transform: capitalize;
+}

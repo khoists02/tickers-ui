@@ -1,12 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PaginationResponse, initPageable } from "../../../types/generic";
-import { ITickerDetails, ITickerResponse, TickerDetailsResponse } from "../../../types/tickers";
+import { ITickerDetailsResponse, ITickerResponse } from "../../../types/tickers";
+import { IStockData } from "../../../types/stocks";
 
 const initialState = {
   loading: false,
   entities: [] as ITickerResponse[],
   pageable: initPageable,
-  entity: null as ITickerDetails | null,
+  entity: null as ITickerDetailsResponse | null,
+  stocks: [] as IStockData[],
+  tickers: [] as string[]
 };
 
 const tickersSlice = createSlice({
@@ -32,14 +35,20 @@ const tickersSlice = createSlice({
     },
     getDetailsSuccess(
       state,
-      action: PayloadAction<TickerDetailsResponse<ITickerDetails>>,
+      action: PayloadAction<ITickerDetailsResponse>,
     ) {
       state.loading = false;
-      state.entity = action.payload.results;
+      state.entity = action.payload;
     },
     getDetailsFail(state) {
       state.loading = false;
     },
+    getStockDataSuccess(state, action: PayloadAction<IStockData[]>) {
+      state.stocks = action.payload;
+    },
+    getTickersBySicsSuccess(state, action: PayloadAction<string[]>) {
+      state.tickers = action.payload;
+    }
   },
 });
 

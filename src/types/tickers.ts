@@ -1,6 +1,7 @@
 import { SearchPaginateType } from "./generic";
 
 export interface ITickerDetailsResponse {
+  sicDescription?: string;
   active?: boolean;
   cik?: string;
   currencyName?: string;
@@ -60,6 +61,6 @@ export const defaultSearchTickersParam: Readonly<ISearchTickersParam> = {
   market: undefined,
   sort: undefined,
   order: undefined,
-  size: 10,
+  size: 50,
   page: 0,
 };

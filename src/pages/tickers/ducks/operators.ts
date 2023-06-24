@@ -4,9 +4,7 @@ import { TickersAction } from "./slices";
 import { PaginationResponse } from "../../../types/generic";
 import {
   ISearchTickersParam,
-  ITickerDetails,
   ITickerResponse,
-  TickerDetailsResponse,
 } from "../../../types/tickers";
 
 export const getTickers =
@@ -15,8 +13,30 @@ export const getTickers =
       try {
         dispatch(TickersAction.getTickersStart());
 
+        let requestParams = {};
+
+        if (params) {
+          const { search, type, size, ticker } = params;
+
+          if (ticker) {
+            requestParams = { ...requestParams, ticker }
+          }
+
+          if (search) {
+            requestParams = { ...requestParams, search }
+          }
+
+          if (type) {
+            requestParams = { ...requestParams, type }
+          }
+
+          if (size) {
+            requestParams = { ...requestParams, size }
+          }
+        }
+
         const response = await axios.get("/tickers", {
-          params,
+          params: requestParams,
         });
 
         dispatch(
@@ -49,36 +69,44 @@ export const getTickersPagination =
       }
     };
 export const getTickerDetails =
-  (ticker?: string, date?: string): AppThunk =>
+  (id?: string, date?: string): AppThunk =>
     async (dispatch) => {
       try {
         dispatch(TickersAction.getDetailsStart());
-        const details = await axios.get(`/tickers/${ticker || ""}`);
-        const response: TickerDetailsResponse<ITickerDetails> = {
-          status: details?.data.status,
-          requestId: details?.data ? details.data["request_id"] : "",
-          results: details?.data
-            ? {
-                ...details?.data.results,
-                primaryExchange: details?.data.results["primary_exchange"],
-                totalEmployees: details?.data.results["total_employees"],
-                marketCap: details?.data.results["market_cap"],
-                currencyName: details?.data.results["currency_name"],
-                iconUrl: details?.data.results["branding"]["icon_url"]?.replace(
-                  "https://",
-                  ""
-                ),
-                logoUrl: details?.data.results["branding"]["logo_url"]?.replace(
-                  "https://",
-                  ""
-                ),
-                shareClassOutstanding:
-                details?.data.results["share_class_shares_outstanding"],
-              }
-            : null,
-        };
-        dispatch(TickersAction.getDetailsSuccess(response));
+        const details = await axios.get(`/tickers/${id || ""}`);
+        dispatch(TickersAction.getDetailsSuccess(details.data));
       } catch (error) {
         dispatch(TickersAction.getDetailsFail());
       }
     };
+
+export const getStockDataByTicker =
+  (ticker: string, type = "YEARLY"): AppThunk =>
+    async (dispatch) => {
+      try {
+        const details = await axios.get(`/stocks/${ticker}`, {
+          params: { type }
+        });
+        dispatch(TickersAction.getStockDataSuccess(details.data.content));
+      } catch (error) {
+        console.log({ error })
+      }
+    };
+
+export const getTickersBySics = (sics: string[]): AppThunk =>
+  async (dispatch) => {
+    let params = {};
+    if (sics.length) {
+      params = {
+        sics: sics.toString(),
+      }
+    }
+    try {
+      const details = await axios.get(`/tickers/sics`, {
+        params
+      });
+      dispatch(TickersAction.getTickersBySicsSuccess(details.data.content?.map((x: { ticker: string }) => x.ticker)));
+    } catch (error) {
+      console.log({ error })
+    }
+  };

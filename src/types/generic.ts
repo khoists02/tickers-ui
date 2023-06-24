@@ -44,3 +44,26 @@ export interface SearchPaginateType {
   page?: number | 0;
   size?: number | 10;
 }
+
+export const PaginationClientOpts = [
+  {
+    label: 10,
+    value: 10,
+  },
+  {
+    label: 50,
+    value: 50,
+  },
+  {
+    label: 100,
+    value: 100,
+  },
+  {
+    label: 200,
+    value: 200,
+  },
+  {
+    label: 300,
+    value: 300,
+  },
+];
