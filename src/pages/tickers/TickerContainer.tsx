@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import React, { FunctionComponent } from "react";
 import { TickersFilter } from "./Filter";
 import { IRootState } from "../../config/reducers";
