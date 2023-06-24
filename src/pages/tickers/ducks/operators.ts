@@ -1,35 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import axios from "axios";
 import { AppThunk } from "../../../config/store";
+import { TickersAction } from "./slices";
+import { PaginationResponse } from "../../../types/generic";
 import {
+  ISearchTickersParam,
   ITickerDetails,
   ITickerResponse,
-  PaginationPolygonResponse,
   TickerDetailsResponse,
-  TickersAction,
-} from "./slices";
-
-export interface ISearchTickersParam {
-  search?: string;
-  ticker?: string;
-  type?: string;
-  limit?: number;
-  sort?: string;
-  order?: string;
-  market?: string;
-}
-
-export const defaultSearchTickersParam: Readonly<ISearchTickersParam> = {
-  search: "",
-  type: "",
-  ticker: "",
-  market: "",
-  sort: "",
-  order: "",
-  limit: 100,
-};
+} from "../../../types/tickers";
 
 export const getTickers =
   (params?: ISearchTickersParam): AppThunk =>
@@ -37,26 +15,15 @@ export const getTickers =
       try {
         dispatch(TickersAction.getTickersStart());
 
-        const studies = await axios.get("/tickers", {
+        const response = await axios.get("/tickers", {
           params,
         });
 
-        const response: PaginationPolygonResponse<ITickerResponse> = {
-          count: studies.data?.count,
-          nextPage: studies.data ? studies.data["next_page"] : false,
-          nextUrl: studies.data ? studies.data["next_url"] : "",
-          requestId: studies.data ? studies.data["request_id"] : "",
-          results: studies.data?.results.map((x: any) => {
-            return {
-              ...x,
-              currencyName: x["currency_name"],
-              lastUpdated: x["last_updated_utc"],
-              primaryExchange: x["primary_exchange"],
-            };
-          }),
-        };
-
-        dispatch(TickersAction.getTickersSuccess(response));
+        dispatch(
+          TickersAction.getTickersSuccess(
+            response.data as PaginationResponse<ITickerResponse>
+          )
+        );
       } catch (error) {
         dispatch(TickersAction.getTickersFail());
       }
@@ -97,9 +64,16 @@ export const getTickerDetails =
                 totalEmployees: details?.data.results["total_employees"],
                 marketCap: details?.data.results["market_cap"],
                 currencyName: details?.data.results["currency_name"],
-                iconUrl: details?.data.results["branding"]["icon_url"]?.replace("https://", ""),
-                logoUrl: details?.data.results["branding"]["logo_url"]?.replace("https://", ""),
-                shareClassOutstanding: details?.data.results["share_class_shares_outstanding"]
+                iconUrl: details?.data.results["branding"]["icon_url"]?.replace(
+                  "https://",
+                  ""
+                ),
+                logoUrl: details?.data.results["branding"]["logo_url"]?.replace(
+                  "https://",
+                  ""
+                ),
+                shareClassOutstanding:
+                details?.data.results["share_class_shares_outstanding"],
               }
             : null,
         };
