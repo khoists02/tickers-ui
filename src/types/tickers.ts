@@ -64,3 +64,8 @@ export const defaultSearchTickersParam: Readonly<ISearchTickersParam> = {
   size: 50,
   page: 0,
 };
+
+export interface ITickerClose {
+  ticker?: string;
+  close?: number;
+}

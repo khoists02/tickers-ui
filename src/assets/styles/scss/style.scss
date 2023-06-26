@@ -155,3 +155,9 @@ Waves
 .dark-skin .table-bordered>thead>tr>th {
   text-transform: capitalize;
 }
+
+.dataTables_wrapper {
+  max-height: calc(100vh - 450px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}

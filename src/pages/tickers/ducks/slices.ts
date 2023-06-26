@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PaginationResponse, initPageable } from "../../../types/generic";
-import { ITickerDetailsResponse, ITickerResponse } from "../../../types/tickers";
+import { ITickerClose, ITickerDetailsResponse, ITickerResponse } from "../../../types/tickers";
 import { IStockData } from "../../../types/stocks";
 
 const initialState = {
@@ -9,7 +9,9 @@ const initialState = {
   pageable: initPageable,
   entity: null as ITickerDetailsResponse | null,
   stocks: [] as IStockData[],
-  tickers: [] as string[]
+  tickers: [] as string[],
+  tickersClose: [] as ITickerClose[],
+  updatedUUId: "",
 };
 
 const tickersSlice = createSlice({
@@ -43,11 +45,15 @@ const tickersSlice = createSlice({
     getDetailsFail(state) {
       state.loading = false;
     },
-    getStockDataSuccess(state, action: PayloadAction<IStockData[]>) {
-      state.stocks = action.payload;
+    getStockDataSuccess(state, action) {
+      state.stocks = action.payload.content;
+      state.updatedUUId = action.payload.id;
     },
     getTickersBySicsSuccess(state, action: PayloadAction<string[]>) {
       state.tickers = action.payload;
+    },
+    getCloseByTickerIdsSuccess(state, action: PayloadAction<ITickerClose[]>) {
+      state.tickersClose = action.payload;
     }
   },
 });

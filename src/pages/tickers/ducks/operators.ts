@@ -81,13 +81,13 @@ export const getTickerDetails =
     };
 
 export const getStockDataByTicker =
-  (ticker: string, type = "YEARLY"): AppThunk =>
+  (ticker: string, type = "WEEKLY"): AppThunk =>
     async (dispatch) => {
       try {
         const details = await axios.get(`/stocks/${ticker}`, {
           params: { type }
         });
-        dispatch(TickersAction.getStockDataSuccess(details.data.content));
+        dispatch(TickersAction.getStockDataSuccess(details.data));
       } catch (error) {
         console.log({ error })
       }
@@ -106,6 +106,24 @@ export const getTickersBySics = (sics: string[]): AppThunk =>
         params
       });
       dispatch(TickersAction.getTickersBySicsSuccess(details.data.content?.map((x: { ticker: string }) => x.ticker)));
+    } catch (error) {
+      console.log({ error })
+    }
+  };
+
+export const getCloseByTickerIds = (tickers: string[]): AppThunk =>
+  async (dispatch) => {
+    let params = {};
+    if (tickers.length) {
+      params = {
+        tickers: tickers.toString(),
+      }
+    }
+    try {
+      const response = await axios.get(`/stocks/tickers`, {
+        params
+      });
+      dispatch(TickersAction.getCloseByTickerIdsSuccess(response.data.content));
     } catch (error) {
       console.log({ error })
     }
