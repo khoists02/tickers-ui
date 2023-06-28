@@ -93,6 +93,7 @@ Waves
 @import '../css/skin_color.css';
 @import '../css/animate.css';
 @import '../../icons/font-awesome/css/font-awesome.css';
+// @import '~react-datepicker/dist/react-datepicker.min.css';
 // @import '../../../../assets/icons/Ionicons/css/ionicons.css';
 // @import '../../../../assets/icons/themify-icons/themify-icons.css';
 // @import '../../../../assets/icons/linea-icons/linea.css';
@@ -160,4 +161,34 @@ Waves
   max-height: calc(100vh - 450px);
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+  color: #ffffff !important;
+  display: inline-block;
+  width: 2.7em !important;
+  line-height: 2.7em !important;
+  text-align: center;
+  margin: 0.166em !important;
+  font-size: 12px !important;
+  background: #0c1a32;
+}
+
+.react-datepicker,
+.react-datepicker__header {
+  background-color: #112547 !important;
+  border-bottom: 1px solid #0c1a32 !important;
+}
+
+.react-datepicker {
+  border: 1px solid #0c1a32 !important;
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+  background-color: #bad9f1 !important;
 }

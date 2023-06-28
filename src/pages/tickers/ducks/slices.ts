@@ -49,6 +49,10 @@ const tickersSlice = createSlice({
       state.stocks = action.payload.content;
       state.updatedUUId = action.payload.id;
     },
+    getStockDataFail(state) {
+      state.stocks = [];
+      state.updatedUUId = "";
+    },
     getTickersBySicsSuccess(state, action: PayloadAction<string[]>) {
       state.tickers = action.payload;
     },

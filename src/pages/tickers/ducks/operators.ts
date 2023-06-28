@@ -81,15 +81,16 @@ export const getTickerDetails =
     };
 
 export const getStockDataByTicker =
-  (ticker: string, type = "WEEKLY"): AppThunk =>
+  (ticker: string, type = "DAILY", start?: Date, end?: Date): AppThunk =>
     async (dispatch) => {
       try {
         const details = await axios.get(`/stocks/${ticker}`, {
-          params: { type }
+          params: { type, start, end }
         });
         dispatch(TickersAction.getStockDataSuccess(details.data));
       } catch (error) {
-        console.log({ error })
+        console.log({ error });
+        dispatch(TickersAction.getStockDataFail());
       }
     };
 

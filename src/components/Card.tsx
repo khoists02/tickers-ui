@@ -57,13 +57,19 @@ export const Card: FC<ICard> = ({
                   setExpended(!expended);
                 }}
               >
-                <i className="fa fa-angle-down cursor-pointer"></i>
+                <i
+                  className={`fa fa-angle-${
+                    expended ? "down" : "up"
+                  } cursor-pointer`}
+                ></i>
               </h4>
             )}
           </div>
         )}
 
-        <div className="box-body">{expended && children}</div>
+        <div className={`box-body ${expended ? "animated bounceInUp" : ""}`}>
+          {expended && children}
+        </div>
       </div>
     </>
   );

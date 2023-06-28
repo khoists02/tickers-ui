@@ -26,6 +26,7 @@ import axios from "axios";
 import { formatDate } from "../../utils/date";
 import { ITickerClose } from "../../types/tickers";
 import { getCsrfToken } from "../auth/ducks/opertators";
+import DateRangePicker, { yyyyMMdd } from "../../components/DateRangePicker";
 
 const intervalSeconds = 12; // 5 times
 const initialCols = [
@@ -65,7 +66,10 @@ const TickerDetailsContainer: FC = () => {
   const [cols, setCols] = useState<IColumn[]>(initialCols);
   const [selectedDate, setSelectedDate] = useState("");
   const [trigger, setTrigger] = useState(false);
-  const [subTitle, setSubTitle] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("WEEKLY");
+
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!token) dispatch(getCsrfToken());
@@ -84,7 +88,6 @@ const TickerDetailsContainer: FC = () => {
   }, [dispatch, params]);
 
   useEffect(() => {
-    if (entity?.ticker) dispatch(getStockDataByTicker(entity?.ticker));
     if (entity?.sicDescription) {
       setSics(entity.sicDescription.split(",").map((x) => x.toUpperCase()));
     }
@@ -211,49 +214,23 @@ const TickerDetailsContainer: FC = () => {
       <>
         <div className="row">
           <div className="col-lg-12">
-            <div className="box bg-gradient-primary">
-              <div className="box-body">
+            <Card title={entity?.name}>
+              <>
                 <div className="row">
                   <div className="col-xl-6 col-12">
-                    <h3 className="text-white mb-50">
-                      Revenue Overview - {entity?.name}{" "}
-                    </h3>
-                    <div className="d-flex justify-content-between align-items-end">
-                      <div className="d-flex">
-                        {/* <div className="icon d-flex align-items-center mx-2">
-                          <SvgLogoTicker polygonUrl={entity?.logoUrl || ""} />
-                        </div> */}
-                        <div>
-                          {/* <h5 className="fw-600 text-white mb-0 mt-0">
-                            Share Class:{" "}
-                            {convertToInternationalCurrencySystem(
-                              entity?.shareClassOutstanding?.toString() || ""
-                            )}
-                          </h5> */}
-                          <p className="text-white-50">Revenue</p>
-                          {/* <h5 className="text-white">
-                            {convertToInternationalCurrencySystem(
-                              entity?.marketCap || ""
-                            )}
-                            <span className="ms-40">
-                              <i className="fa fa-angle-down me-10"></i>
-                              <span className="text-white-50">0.03%</span>
-                            </span>{" "}
-                          </h5> */}
-                        </div>
-                      </div>
-                    </div>
+                    <h5 className="text-white mb-50">Revenue Overview</h5>
                   </div>
                   <div className="col-xl-6 col-12"></div>
                 </div>
 
                 <div>
+                  <h5 className="text-white ">Sics</h5>
                   {sics.map((sic, index) => {
                     return (
                       <span
                         key={sic}
-                        className={`badge badge-success mx-1 ${
-                          index === 0 ? "ml-0" : ""
+                        className={`badge badge-success  ${
+                          index === 0 ? "" : "mx-1"
                         }`}
                       >
                         {sic}
@@ -261,8 +238,107 @@ const TickerDetailsContainer: FC = () => {
                     );
                   })}
                 </div>
-              </div>
-            </div>
+              </>
+            </Card>
+          </div>
+
+          <div className="col-lg-12">
+            <Card title="Prepare Filters">
+              <>
+                <div>
+                  <button
+                    onClick={() => {
+                      setSelectedFilter("DAILY");
+                    }}
+                    type="button"
+                    className={`btn btn-primary${
+                      selectedFilter === "DAILY" ? "" : "-light"
+                    }`}
+                  >
+                    DAILY
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedFilter("WEEKLY");
+                    }}
+                    type="button"
+                    className={`mx-2 btn btn-primary${
+                      selectedFilter === "WEEKLY" ? "" : "-light"
+                    }`}
+                  >
+                    WEEKLY
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedFilter("MONTHLY");
+                    }}
+                    type="button"
+                    className={`mx-2 btn btn-primary${
+                      selectedFilter === "MONTHLY" ? "" : "-light"
+                    }`}
+                  >
+                    MONTHLY
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedFilter("DATE_RANGE");
+                    }}
+                    type="button"
+                    className={`mx-2 btn btn-primary${
+                      selectedFilter === "DATE_RANGE" ? "" : "-light"
+                    }`}
+                  >
+                    DATE RANGE
+                  </button>
+
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={() => {
+                      if (!entity?.ticker) return;
+                      if (selectedFilter !== "DATE_RANGE") {
+                        dispatch(
+                          getStockDataByTicker(entity?.ticker, selectedFilter)
+                        );
+                      } else {
+                        dispatch(
+                          getStockDataByTicker(
+                            entity?.ticker,
+                            selectedFilter,
+                            startDate,
+                            endDate as Date
+                          )
+                        );
+                      }
+                    }}
+                  >
+                    Filter
+                  </button>
+                </div>
+
+                <div className="mt-2">
+                  <div className="row">
+                    <div className="col-lg-4">
+                      {selectedFilter === "DATE_RANGE" && (
+                        <DateRangePicker
+                          isFilterOverCurrentYear={false}
+                          placeholderText={"Filter Date"}
+                          onChange={(date) => {
+                            setStartDate(date.startDate as Date);
+                            setEndDate(date.endDate as Date);
+                          }}
+                          maxDate={new Date()}
+                          dateFormat={yyyyMMdd}
+                          selectedRange={{ startDate, endDate }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            </Card>
           </div>
 
           <div className="col-lg-12">
@@ -272,7 +348,7 @@ const TickerDetailsContainer: FC = () => {
               subTitle="Search new value fields relative"
             >
               <>
-                <div className="">
+                <div>
                   {tickers
                     .filter((x) => x !== entity?.ticker)
                     .map((t, i) => {
@@ -339,18 +415,43 @@ const TickerDetailsContainer: FC = () => {
                       axios.defaults.headers.common["X-XSRF-TOKEN"] = token;
                       await axios.put(`/stocks/tickers/${updatedUUId}`, {
                         json: JSON.stringify(filteredStocks),
+                        type: "train",
                       });
                     }}
+                    disabled={updatedUUId === ""}
                     className="mx-2 mt-3 waves-effect waves-light btn btn-primary-light"
                   >
-                    Import Data
+                    Import Train Data
                   </button>
 
                   <button
                     type="button"
+                    disabled={updatedUUId === ""}
+                    onClick={async () => {
+                      axios.defaults.headers.common["X-XSRF-TOKEN"] = token;
+                      await axios.put(`/stocks/tickers/${updatedUUId}`, {
+                        json: null,
+                        type: "train",
+                      });
+                    }}
                     className="mx-2 mt-3 waves-effect waves-light btn btn-primary-light"
                   >
-                    Predictions
+                    Clear Train Data
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={updatedUUId === ""}
+                    onClick={async () => {
+                      axios.defaults.headers.common["X-XSRF-TOKEN"] = token;
+                      await axios.put(`/stocks/tickers/${updatedUUId}`, {
+                        json: null,
+                        type: "test",
+                      });
+                    }}
+                    className="mx-2 mt-3 waves-effect waves-light btn btn-primary-light"
+                  >
+                    Clear Test Data
                   </button>
                 </div>
               </>
@@ -366,7 +467,6 @@ const TickerDetailsContainer: FC = () => {
               primaryKey="date"
               selectedValue={selectedDate}
               newCols={selectedTickers}
-              subTitle={subTitle}
             />
           </div>
         </div>
