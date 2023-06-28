@@ -1,35 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import axios from "axios";
 import { AppThunk } from "../../../config/store";
+import { TickersAction } from "./slices";
+import { PaginationResponse } from "../../../types/generic";
 import {
-  ITickerDetails,
+  ISearchTickersParam,
   ITickerResponse,
-  PaginationPolygonResponse,
-  TickerDetailsResponse,
-  TickersAction,
-} from "./slices";
-
-export interface ISearchTickersParam {
-  search?: string;
-  ticker?: string;
-  type?: string;
-  limit?: number;
-  sort?: string;
-  order?: string;
-  market?: string;
-}
-
-export const defaultSearchTickersParam: Readonly<ISearchTickersParam> = {
-  search: "",
-  type: "",
-  ticker: "",
-  market: "",
-  sort: "",
-  order: "",
-  limit: 100,
-};
+} from "../../../types/tickers";
 
 export const getTickers =
   (params?: ISearchTickersParam): AppThunk =>
@@ -37,26 +13,37 @@ export const getTickers =
       try {
         dispatch(TickersAction.getTickersStart());
 
-        const studies = await axios.get("/tickers", {
-          params,
+        let requestParams = {};
+
+        if (params) {
+          const { search, type, size, ticker } = params;
+
+          if (ticker) {
+            requestParams = { ...requestParams, ticker }
+          }
+
+          if (search) {
+            requestParams = { ...requestParams, search }
+          }
+
+          if (type) {
+            requestParams = { ...requestParams, type }
+          }
+
+          if (size) {
+            requestParams = { ...requestParams, size }
+          }
+        }
+
+        const response = await axios.get("/tickers", {
+          params: requestParams,
         });
 
-        const response: PaginationPolygonResponse<ITickerResponse> = {
-          count: studies.data?.count,
-          nextPage: studies.data ? studies.data["next_page"] : false,
-          nextUrl: studies.data ? studies.data["next_url"] : "",
-          requestId: studies.data ? studies.data["request_id"] : "",
-          results: studies.data?.results.map((x: any) => {
-            return {
-              ...x,
-              currencyName: x["currency_name"],
-              lastUpdated: x["last_updated_utc"],
-              primaryExchange: x["primary_exchange"],
-            };
-          }),
-        };
-
-        dispatch(TickersAction.getTickersSuccess(response));
+        dispatch(
+          TickersAction.getTickersSuccess(
+            response.data as PaginationResponse<ITickerResponse>
+          )
+        );
       } catch (error) {
         dispatch(TickersAction.getTickersFail());
       }
@@ -82,29 +69,63 @@ export const getTickersPagination =
       }
     };
 export const getTickerDetails =
-  (ticker?: string, date?: string): AppThunk =>
+  (id?: string, date?: string): AppThunk =>
     async (dispatch) => {
       try {
         dispatch(TickersAction.getDetailsStart());
-        const details = await axios.get(`/tickers/${ticker || ""}`);
-        const response: TickerDetailsResponse<ITickerDetails> = {
-          status: details?.data.status,
-          requestId: details?.data ? details.data["request_id"] : "",
-          results: details?.data
-            ? {
-                ...details?.data.results,
-                primaryExchange: details?.data.results["primary_exchange"],
-                totalEmployees: details?.data.results["total_employees"],
-                marketCap: details?.data.results["market_cap"],
-                currencyName: details?.data.results["currency_name"],
-                iconUrl: details?.data.results["branding"]["icon_url"]?.replace("https://", ""),
-                logoUrl: details?.data.results["branding"]["logo_url"]?.replace("https://", ""),
-                shareClassOutstanding: details?.data.results["share_class_shares_outstanding"]
-              }
-            : null,
-        };
-        dispatch(TickersAction.getDetailsSuccess(response));
+        const details = await axios.get(`/tickers/${id || ""}`);
+        dispatch(TickersAction.getDetailsSuccess(details.data));
       } catch (error) {
         dispatch(TickersAction.getDetailsFail());
       }
     };
+
+export const getStockDataByTicker =
+  (ticker: string, type = "DAILY", start?: Date, end?: Date): AppThunk =>
+    async (dispatch) => {
+      try {
+        const details = await axios.get(`/stocks/${ticker}`, {
+          params: { type, start, end }
+        });
+        dispatch(TickersAction.getStockDataSuccess(details.data));
+      } catch (error) {
+        console.log({ error });
+        dispatch(TickersAction.getStockDataFail());
+      }
+    };
+
+export const getTickersBySics = (sics: string[]): AppThunk =>
+  async (dispatch) => {
+    let params = {};
+    if (sics.length) {
+      params = {
+        sics: sics.toString(),
+      }
+    }
+    try {
+      const details = await axios.get(`/tickers/sics`, {
+        params
+      });
+      dispatch(TickersAction.getTickersBySicsSuccess(details.data.content?.map((x: { ticker: string }) => x.ticker)));
+    } catch (error) {
+      console.log({ error })
+    }
+  };
+
+export const getCloseByTickerIds = (tickers: string[]): AppThunk =>
+  async (dispatch) => {
+    let params = {};
+    if (tickers.length) {
+      params = {
+        tickers: tickers.toString(),
+      }
+    }
+    try {
+      const response = await axios.get(`/stocks/tickers`, {
+        params
+      });
+      dispatch(TickersAction.getCloseByTickerIdsSuccess(response.data.content));
+    } catch (error) {
+      console.log({ error })
+    }
+  };

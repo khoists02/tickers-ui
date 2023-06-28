@@ -3,11 +3,11 @@ import { ITickerFilterSearch } from "./tickerType";
 import useTickerTypeDropdown from "../../hooks/useTickerTypeDropdown";
 import { Dropdown, IOption } from "../../components/Dropdown";
 import { useAppDispatch } from "../../config/store";
+import { getTickers } from "./ducks/operators";
 import {
   ISearchTickersParam,
   defaultSearchTickersParam,
-  getTickers,
-} from "./ducks/operators";
+} from "../../types/tickers";
 
 interface ITickersFilter {
   onFilter: (filter?: ITickerFilterSearch) => void;
@@ -124,13 +124,13 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
               onChange={(item: IOption) => {
                 setSearchParams({
                   ...searchParams,
-                  limit: parseInt(item.value, 10),
+                  size: parseInt(item.value, 10),
                 });
               }}
               label="Limit"
               option={limitOptions}
               defaultSelected={limitOptions.find(
-                (x) => x.value === searchParams.limit?.toString()
+                (x) => x.value === searchParams.size?.toString()
               )}
             />
           </div>

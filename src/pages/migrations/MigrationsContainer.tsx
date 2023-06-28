@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { FC, useEffect, useState, useRef, useCallback } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../config/reducers";
