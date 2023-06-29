@@ -67,3 +67,10 @@ export const PaginationClientOpts = [
     value: 300,
   },
 ];
+
+export interface ErrorMessage {
+  message: string;
+  type: string;
+  status: string;
+  code: string | number;
+}

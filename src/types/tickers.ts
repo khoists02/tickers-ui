@@ -21,6 +21,13 @@ export interface ITickerResponse {
   tickerDetails: ITickerDetailsResponse
 }
 
+export interface IPredictionRequestAndResponse {
+  id?: string;
+  name?: string;
+  trainFilter?: string;
+  testFilter?: string;
+}
+
 export interface ITickerDetails {
   cik?: string;
   currencyName?: string;
@@ -42,6 +49,16 @@ export interface TickerDetailsResponse<T> {
   requestId?: string;
   status?: string;
   results: T
+}
+
+export interface ISearchPredictions extends SearchPaginateType {
+  search?: string;
+}
+
+export const defaultSearchPrediction: Readonly<ISearchPredictions> = {
+  search: "",
+  page: 0,
+  size: 10,
 }
 
 export interface ISearchTickersParam extends SearchPaginateType {

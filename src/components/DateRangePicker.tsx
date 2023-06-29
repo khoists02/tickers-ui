@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from "react";
+import React, { FC, useState, useRef, useEffect } from "react";
 import * as locales from "date-fns/locale";
 import { DateTime } from "luxon";
 import { getMonth, getYear, format, isValid, parse } from "date-fns";
@@ -158,6 +158,23 @@ const DateRangePicker: FC<ReactDateRangeProps> = ({
   const formatPattern = dateFormat || yyyyMMdd;
   const localName = "enUS";
   const locale = (locales as Locales)[localName];
+
+  useEffect(() => {
+    if (!selectedRange?.startDate && !selectedRange?.endDate) {
+      setInputValue("");
+    }
+
+    if (selectedRange?.startDate && selectedRange.endDate) {
+      setDateRange(selectedRange);
+      setInputValue(
+        `${format(selectedRange.startDate, yyyyMMdd)}-${format(
+          selectedRange.endDate,
+          yyyyMMdd
+        )}`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRange]);
   const updateInputValue = (inputStr: string): void => {
     if (inputStr) {
       const r = inputStr.split("-");
@@ -180,6 +197,7 @@ const DateRangePicker: FC<ReactDateRangeProps> = ({
       }
     } else {
       setInputValue(inputStr);
+      setDateRange({ startDate: null, endDate: null });
       if (onChange) {
         onChange({
           startDate: null,
@@ -188,11 +206,12 @@ const DateRangePicker: FC<ReactDateRangeProps> = ({
       }
     }
   };
+
   return (
     <>
       <OverlayTrigger
         show={show}
-        placement="top"
+        placement="bottom"
         trigger="click"
         rootCloseEvent={"click"}
         overlay={
@@ -262,8 +281,8 @@ const DateRangePicker: FC<ReactDateRangeProps> = ({
             }}
             placeholder={placeholderText}
             disabled={readonly}
-            onFocus={() => {
-              setShow(true);
+            onClick={() => {
+              setShow(!show);
             }}
           />
           {inputValue && !readonly && (

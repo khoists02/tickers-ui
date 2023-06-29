@@ -89,7 +89,6 @@ export const getStockDataByTicker =
         });
         dispatch(TickersAction.getStockDataSuccess(details.data));
       } catch (error) {
-        console.log({ error });
         dispatch(TickersAction.getStockDataFail());
       }
     };

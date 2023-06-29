@@ -8,6 +8,8 @@ interface ICard {
   hasSearchBox?: boolean;
   search?: (value: string) => void;
   widthTile?: number;
+  animated?: boolean;
+  headerActions?: React.ReactElement[];
 }
 
 export const Card: FC<ICard> = ({
@@ -16,8 +18,10 @@ export const Card: FC<ICard> = ({
   title,
   subTitle,
   hasSearchBox = false,
+  animated = false,
   search,
   widthTile = 100,
+  headerActions = [],
 }) => {
   const [expended, setExpended] = useState(true);
   const [searchKey, setSearchKey] = useState("");
@@ -51,23 +55,34 @@ export const Card: FC<ICard> = ({
               </div>
             </div>
 
-            {isExpended && (
-              <h4
-                onClick={() => {
-                  setExpended(!expended);
-                }}
-              >
-                <i
-                  className={`fa fa-angle-${
-                    expended ? "down" : "up"
-                  } cursor-pointer`}
-                ></i>
-              </h4>
-            )}
+            <div className="actions d-flex">
+              {headerActions.map((header, index) => {
+                return (
+                  <h5 key={new Date().getTimezoneOffset() + index}>{header}</h5>
+                );
+              })}
+              {isExpended && (
+                <h5
+                  onClick={() => {
+                    setExpended(!expended);
+                  }}
+                >
+                  <i
+                    className={`fa fa-angle-${
+                      expended ? "down" : "up"
+                    } cursor-pointer`}
+                  ></i>
+                </h5>
+              )}
+            </div>
           </div>
         )}
 
-        <div className={`box-body ${expended ? "animated bounceInUp" : ""}`}>
+        <div
+          className={`box-body ${
+            expended && animated ? "animated bounceInUp" : ""
+          }`}
+        >
           {expended && children}
         </div>
       </div>

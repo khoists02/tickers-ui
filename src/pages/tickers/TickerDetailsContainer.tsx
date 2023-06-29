@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-misused-promises */
@@ -109,6 +110,8 @@ const TickerDetailsContainer: FC = () => {
         const newCol: IColumn = {
           name: t,
         };
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         cloneCols = [newCol, ...cloneCols];
       });
       setCols(cloneCols);

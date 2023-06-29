@@ -2,13 +2,14 @@ import React from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { TickersRouter } from "./pages/tickers";
 import { MigrationsRouter } from "./pages/migrations";
+import { PredictionsRouter } from "./pages/predictions";
 import { Header } from "./components/parts/Header";
 import { Sidebar } from "./components/parts/Sidebar";
 import { Footer } from "./components/parts/Footer";
 import { PageNotFound } from "./components/PageNotFound";
 import ApiError from "./components/ApiError";
 
-const combinedRoutes = [TickersRouter, MigrationsRouter];
+const combinedRoutes = [TickersRouter, MigrationsRouter, PredictionsRouter];
 
 interface IRoute {
   path: string;
