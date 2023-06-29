@@ -89,6 +89,16 @@ export const EditTable: FC<IEditTableProps> = ({
     }
   }, [selectedOption, data, searchKey, searchLabel]);
 
+  const getStyleTable = (width: number): React.CSSProperties => {
+    return {
+      boxSizing: "border-box",
+      position: "relative",
+      width: width || 170,
+      minWidth: 0,
+      flex: `${width || 170} 0 auto`,
+    };
+  };
+
   const renderTdAction = useCallback(
     (
       idAction: string,
@@ -128,15 +138,7 @@ export const EditTable: FC<IEditTableProps> = ({
           }
           // @ts-ignore
           content = (
-            <td
-              style={{
-                boxSizing: "border-box",
-                position: "relative",
-                width: col?.width || 50,
-                minWidth: 0,
-                flex: `${col?.width || 50} 0 auto`,
-              }}
-            >
+            <td style={getStyleTable(col?.width || 50)}>
               <div className="text-center w-100">
                 {actions.map((action, iAction) => {
                   return (
@@ -229,27 +231,11 @@ export const EditTable: FC<IEditTableProps> = ({
                       <tr role="row">
                         {cols.map((col) => {
                           return !col.id ? (
-                            <th
-                              style={{
-                                boxSizing: "border-box",
-                                position: "relative",
-                                width: col.width || 170,
-                                minWidth: 0,
-                                flex: `${col.width || 170} 0 auto`,
-                              }}
-                            >
+                            <th style={getStyleTable(col.width || 170)}>
                               {col.header || col.name}
                             </th>
                           ) : (
-                            <th
-                              style={{
-                                boxSizing: "border-box",
-                                position: "relative",
-                                width: 50,
-                                minWidth: 0,
-                                flex: `${50} 0 auto`,
-                              }}
-                            ></th>
+                            <th style={getStyleTable(col.width || 50)}></th>
                           );
                         })}
                       </tr>
@@ -267,15 +253,7 @@ export const EditTable: FC<IEditTableProps> = ({
                           >
                             {cols.map((col) => {
                               return !col.id ? (
-                                <td
-                                  style={{
-                                    boxSizing: "border-box",
-                                    position: "relative",
-                                    width: col.width || 170,
-                                    minWidth: 0,
-                                    flex: `${col.width || 170} 0 auto`,
-                                  }}
-                                >
+                                <td style={getStyleTable(col.width || 170)}>
                                   {dt[col.name as string]}
                                 </td>
                               ) : (
@@ -291,14 +269,12 @@ export const EditTable: FC<IEditTableProps> = ({
                         );
                       })}
                       {filters.length === 0 && (
-                        <p className="p-2">No Results </p>
+                        <p className="ps-3">No Results </p>
                       )}
                     </tbody>
                   </table>
                 </div>
               </div>
-
-              {/* Table Rows */}
             </div>
           </div>
         </Card>

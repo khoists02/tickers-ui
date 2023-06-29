@@ -5,24 +5,29 @@ import { NavLink } from "react-router-dom";
 interface INavBarItem {
   path: string;
   name: string;
+  icon?: string;
 }
 
 const items: INavBarItem[] = [
   {
     path: "/Dashboard",
     name: "Dashboard",
+    icon: "fa fa-home",
   },
   {
     path: "/Tickers",
     name: "Tickers",
+    icon: "fa fa-diamond",
   },
   {
     path: "/Migrations",
     name: "Migrations",
+    icon: "fa fa-compress",
   },
   {
     path: "/Predictions",
     name: "Predictions",
+    icon: "fa fa-braille",
   },
 ];
 
@@ -47,7 +52,7 @@ export const Sidebar: FunctionComponent = () => {
         </div>
         <div className="multinav">
           <div className="multinav-scroll ps" style={{ height: "97%" }}>
-            <ul className="sidebar-menu tree">
+            <ul className="sidebar-menu tree main-menu">
               {items.map((item) => {
                 return (
                   <li
@@ -57,10 +62,7 @@ export const Sidebar: FunctionComponent = () => {
                     key={item.path}
                   >
                     <NavLink to={item.path}>
-                      <i className="icon-Layout-4-blocks">
-                        <span className="path1"></span>
-                        <span className="path2"></span>
-                      </i>
+                      <i className={item.icon}></i>
                       <span>{item.name}</span>
                     </NavLink>
                   </li>
