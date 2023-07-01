@@ -61,6 +61,7 @@ const setupAxiosInterceptors = (store: any): void => {
           "/ResetPassword",
           "/ForgotPassword",
           "/Auth/EmailValidation",
+          "/Login"
         ].includes(window?.location?.pathname) &&
         status === 401 &&
         ((!["1003", "1004", "1005", "1013"].includes(apiError?.code || "") &&

@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const toggle = localStorage.getItem("toggle") || "false";
+
 export const initialState = {
-  collapsed: false,
+  collapsed: toggle !== "false",
 };
 
 const SidebarSlice = createSlice({
@@ -10,6 +12,7 @@ const SidebarSlice = createSlice({
   reducers: {
     toggle(state) {
       state.collapsed = !state.collapsed;
+      localStorage.setItem("toggle", state.collapsed ? "true" : "false");
     },
   },
 });

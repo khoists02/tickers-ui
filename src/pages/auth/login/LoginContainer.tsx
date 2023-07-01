@@ -10,7 +10,6 @@ import SimpleReactValidator from "simple-react-validator";
 import { submitLogin } from "../ducks/opertators";
 import { IRootState } from "../../../config/reducers";
 import { useSelector } from "react-redux";
-import axios from "axios";
 
 const LoginContainer: FC = () => {
   const dispatch = useAppDispatch();
@@ -130,16 +129,6 @@ const LoginContainer: FC = () => {
                               )}
                               SIGN IN
                             </button>
-                            {/*
-                            <button
-                              type="button"
-                              className="btn btn-danger"
-                              onClick={async () => {
-                                await axios.delete("/auth/deleteAll");
-                              }}
-                            >
-                              Delete All Cookies
-                            </button> */}
                           </div>
                         </div>
                       </form>

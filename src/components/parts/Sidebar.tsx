@@ -7,7 +7,6 @@ import { useAppDispatch } from "../../config/store";
 import { logout } from "../../pages/auth/ducks/opertators";
 import { IRootState } from "../../config/reducers";
 import { useSelector } from "react-redux";
-import axios from "axios";
 
 interface INavBarItem {
   path: string;
@@ -93,12 +92,7 @@ export const Sidebar: FunctionComponent = () => {
                 }`}
                 style={getStyleContent()}
               >
-                <a
-                  className="dropdown-item"
-                  onClick={async () => {
-                    await axios.delete("/auth/deleteAll");
-                  }}
-                >
+                <a className="dropdown-item">
                   <i className="ti-user"></i> Profile
                 </a>
                 <a className="dropdown-item">

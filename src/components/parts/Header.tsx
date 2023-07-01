@@ -40,10 +40,7 @@ export const Header: FunctionComponent = () => {
                 onClick={() => {
                   dispatch(SidebarAction.toggle());
                 }}
-                href="#"
                 className="waves-effect waves-light nav-link push-btn btn-primary-light"
-                data-toggle="push-menu"
-                role="button"
               >
                 <i className="fa fa-bars" aria-hidden="true"></i>
               </a>

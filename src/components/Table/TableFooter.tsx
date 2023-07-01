@@ -94,7 +94,7 @@ export const TableFooter: FC<FooterData> = ({
             <a
               type="button"
               onClick={goToPrev}
-              className="page-link cursor-pointer"
+              className="page-link cursor-pointer btn-fixed-w"
             >
               ← &nbsp; Previous
             </a>
@@ -106,7 +106,7 @@ export const TableFooter: FC<FooterData> = ({
           >
             <a
               type="button"
-              className="page-link cursor-pointer"
+              className="page-link cursor-pointer btn-fixed-w"
               onClick={goToNext}
             >
               Next &nbsp; →
