@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import setupAxiosInterceptors from "./config/axios-interceptor";
 import store from "./config/store";
 import { Provider } from "react-redux";
+import { ProgressBar } from "react-bootstrap";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,10 +14,24 @@ const root = ReactDOM.createRoot(
 
 setupAxiosInterceptors(store);
 
+export const Progress = (): JSX.Element => {
+  return (
+    <>
+      <div className="progress-bar progress-bar-success">
+        <span className="sr-only">40% Complete (success)</span>
+      </div>
+    </>
+  );
+};
+
 root.render(
   <BrowserRouter>
     <React.StrictMode>
-      <React.Suspense fallback={<span>Loading...</span>}>
+      <React.Suspense
+        fallback={
+          <ProgressBar animated variant="success" now={100} label={`${100}%`} />
+        }
+      >
         <Provider store={store}>
           <App />
         </Provider>

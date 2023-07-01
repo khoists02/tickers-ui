@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { LoginRouter } from "./pages/auth/login";
 import { TickersRouter } from "./pages/tickers";
 import { MigrationsRouter } from "./pages/migrations";
 import { PredictionsRouter } from "./pages/predictions";
@@ -12,6 +13,7 @@ import { useSelector } from "react-redux";
 import { IRootState } from "./config/reducers";
 
 const combinedRoutes = [TickersRouter, MigrationsRouter, PredictionsRouter];
+const loginRoutes = [LoginRouter];
 
 interface IRoute {
   path: string;
@@ -30,6 +32,15 @@ const generateRoute = (routes: IRoute[]): React.ReactElement => {
   );
 };
 
+const UnAuthenticatedLayout = (): JSX.Element => {
+  return (
+    <>
+      <ApiError />
+      <Outlet />;
+    </>
+  );
+};
+
 const MainLayout = (): JSX.Element => {
   const { collapsed } = useSelector(
     (state: IRootState) => state.sidebarReducer
@@ -37,6 +48,7 @@ const MainLayout = (): JSX.Element => {
   return (
     <>
       <ApiError />
+
       <div
         className={`wrapper sidebar-mini ${
           collapsed ? "sidebar-collapse" : ""
@@ -66,6 +78,16 @@ const PublicPage = (): JSX.Element => {
   return <Outlet />;
 };
 
+const UnAuthenticatedRoutes = (): JSX.Element => {
+  const renderRoutes = generateRoute(loginRoutes);
+  return (
+    <Routes>
+      <Route path="*" element={<Navigate to="/Login" />} />
+      <Route element={<UnAuthenticatedLayout />}>{renderRoutes}</Route>
+    </Routes>
+  );
+};
+
 const AppRoutes = (): JSX.Element => {
   const renderRoutes = generateRoute(combinedRoutes);
   return (
@@ -76,10 +98,10 @@ const AppRoutes = (): JSX.Element => {
         <Route path="/Error" element={<span>Page 500 Error</span>} />
       </Route>
       <Route path="*" element={<Navigate to="/PageNotFound" />} />
-      <Route path="/" element={<Navigate to="/Dashboard" />} />
+      <Route path="/" element={<Navigate to="/Tickers" />} />
       <Route element={<MainLayout />}>{renderRoutes}</Route>
     </Routes>
   );
 };
 
-export { AppRoutes };
+export { AppRoutes, UnAuthenticatedRoutes };
