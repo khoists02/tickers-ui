@@ -34,6 +34,12 @@ const items: INavBarItem[] = [
     icon: "fa fa-braille",
     show: true,
   },
+  {
+    path: "/Filters",
+    name: "Filters",
+    icon: "fa fa-filter",
+    show: true,
+  },
 ];
 
 export const Sidebar: FunctionComponent = () => {

@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { LoginRouter } from "./pages/auth/login";
 import { TickersRouter } from "./pages/tickers";
+import { FiltersRouter } from "./pages/filters";
 import { MigrationsRouter } from "./pages/migrations";
 import { PredictionsRouter } from "./pages/predictions";
 import { Header } from "./components/parts/Header";
@@ -12,7 +13,12 @@ import ApiError from "./components/ApiError";
 import { useSelector } from "react-redux";
 import { IRootState } from "./config/reducers";
 
-const combinedRoutes = [TickersRouter, MigrationsRouter, PredictionsRouter];
+const combinedRoutes = [
+  TickersRouter,
+  MigrationsRouter,
+  PredictionsRouter,
+  FiltersRouter,
+];
 const loginRoutes = [LoginRouter];
 
 interface IRoute {
