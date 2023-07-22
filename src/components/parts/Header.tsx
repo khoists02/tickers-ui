@@ -5,8 +5,11 @@ import {
   LogoLetterWhite,
   LogoLightText,
 } from "../../constants";
+import { useAppDispatch } from "../../config/store";
+import { SidebarAction } from "../../reducers/sidebarSlice";
 
 export const Header: FunctionComponent = () => {
+  const dispatch = useAppDispatch();
   return (
     <header className="main-header">
       <div className="d-flex align-items-center logo-box justify-content-start d-md-none d-block">
@@ -34,15 +37,14 @@ export const Header: FunctionComponent = () => {
           <ul className="header-megamenu nav">
             <li className="btn-group nav-item">
               <a
-                href="#"
+                aria-hidden
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(SidebarAction.toggle());
+                }}
                 className="waves-effect waves-light nav-link push-btn btn-primary-light"
-                data-toggle="push-menu"
-                role="button"
               >
-                <i className="icon-Menu">
-                  <span className="path1"></span>
-                  <span className="path2"></span>
-                </i>
+                <i className="fa fa-bars" aria-hidden="true"></i>
               </a>
             </li>
             <li className="btn-group d-lg-inline-flex d-none">
@@ -69,7 +71,7 @@ export const Header: FunctionComponent = () => {
           </ul>
         </div>
 
-        <div className="navbar-custom-menu r-side">
+        {/* <div className="navbar-custom-menu r-side">
           <ul className="nav navbar-nav">
             <li className="btn-group nav-item">
               <a
@@ -81,7 +83,7 @@ export const Header: FunctionComponent = () => {
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </nav>
     </header>
   );

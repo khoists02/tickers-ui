@@ -10,6 +10,7 @@ interface IDropdown {
   label?: string;
   defaultSelected?: IOption;
   onChange: (item: IOption) => void;
+  className?: string;
 }
 
 export const Dropdown: FC<IDropdown> = ({
@@ -17,6 +18,7 @@ export const Dropdown: FC<IDropdown> = ({
   label,
   defaultSelected,
   onChange,
+  className = "",
 }) => {
   const [selected, setSelected] = useState<IOption | undefined>(
     defaultSelected
@@ -26,7 +28,7 @@ export const Dropdown: FC<IDropdown> = ({
     setSelected(defaultSelected);
   }, [defaultSelected]);
   return (
-    <div className="dropdown">
+    <div className={`dropdown ${className}`}>
       <button
         style={{ minWidth: 110 }}
         onClick={() => {

@@ -3,6 +3,7 @@ import { AppThunk } from "../../../config/store";
 import { TickersAction } from "./slices";
 import { PaginationResponse } from "../../../types/generic";
 import {
+  IPredictionRequestAndResponse,
   ISearchTickersParam,
   ITickerResponse,
 } from "../../../types/tickers";
@@ -89,7 +90,6 @@ export const getStockDataByTicker =
         });
         dispatch(TickersAction.getStockDataSuccess(details.data));
       } catch (error) {
-        console.log({ error });
         dispatch(TickersAction.getStockDataFail());
       }
     };
@@ -108,7 +108,7 @@ export const getTickersBySics = (sics: string[]): AppThunk =>
       });
       dispatch(TickersAction.getTickersBySicsSuccess(details.data.content?.map((x: { ticker: string }) => x.ticker)));
     } catch (error) {
-      console.log({ error })
+      console.log({ error });
     }
   };
 
@@ -126,6 +126,18 @@ export const getCloseByTickerIds = (tickers: string[]): AppThunk =>
       });
       dispatch(TickersAction.getCloseByTickerIdsSuccess(response.data.content));
     } catch (error) {
-      console.log({ error })
+      console.log({ error });
+    }
+  };
+
+export const addFilterPredictionTicker = (predictionId: string, tickerId: string, request: IPredictionRequestAndResponse): AppThunk =>
+  async (dispatch) => {
+    try {
+      dispatch(TickersAction.addPredictionStart());
+      await axios.put(`/predictions/${predictionId}/ticker/${tickerId}`, request);
+      dispatch(TickersAction.addPredictionSuccess());
+    } catch (error) {
+      console.log({ error });
+      dispatch(TickersAction.addPredictionFail());
     }
   };

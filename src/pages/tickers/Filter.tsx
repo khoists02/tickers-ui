@@ -91,7 +91,7 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
     <div className="box">
       <div className="box-body p-0">
         <div className="flexbox align-items-center p-15">
-          <div className="flexbox align-items-center">
+          <div className="flexbox align-items-center flex-onez">
             <Dropdown
               label="Type"
               option={tickerTypesOption}
@@ -135,7 +135,7 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
             />
           </div>
 
-          <div className="flexbox">
+          <div className="flexbox flex-one">
             <div className="input-group">
               <input
                 value={searchParams.ticker}
@@ -165,7 +165,7 @@ export const TickersFilter: FC<ITickersFilter> = ({ onFilter }) => {
               dispatch(getTickers(searchParams));
             }}
             type="button"
-            className="waves-effect waves-light btn btn-primary"
+            className="waves-effect waves-light btn btn-primary btn-fixed-w"
           >
             Search
           </button>
