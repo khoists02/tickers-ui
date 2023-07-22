@@ -37,7 +37,9 @@ export const Header: FunctionComponent = () => {
           <ul className="header-megamenu nav">
             <li className="btn-group nav-item">
               <a
-                onClick={() => {
+                aria-hidden
+                onClick={(e) => {
+                  e.preventDefault();
                   dispatch(SidebarAction.toggle());
                 }}
                 className="waves-effect waves-light nav-link push-btn btn-primary-light"
@@ -69,7 +71,7 @@ export const Header: FunctionComponent = () => {
           </ul>
         </div>
 
-        <div className="navbar-custom-menu r-side">
+        {/* <div className="navbar-custom-menu r-side">
           <ul className="nav navbar-nav">
             <li className="btn-group nav-item">
               <a
@@ -81,7 +83,7 @@ export const Header: FunctionComponent = () => {
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </nav>
     </header>
   );

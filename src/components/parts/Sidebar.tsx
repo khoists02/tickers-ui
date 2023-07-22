@@ -12,6 +12,7 @@ interface INavBarItem {
   path: string;
   name: string;
   icon?: string;
+  show?: boolean;
 }
 
 const items: INavBarItem[] = [
@@ -19,16 +20,19 @@ const items: INavBarItem[] = [
     path: "/Tickers",
     name: "Tickers",
     icon: "fa fa-diamond",
+    show: true,
   },
   {
     path: "/Migrations",
     name: "Migrations",
     icon: "fa fa-compress",
+    show: false,
   },
   {
     path: "/Predictions",
     name: "Predictions",
     icon: "fa fa-braille",
+    show: true,
   },
 ];
 
@@ -117,27 +121,29 @@ export const Sidebar: FunctionComponent = () => {
         <div className="multinav">
           <div className="multinav-scroll ps" style={{ height: "97%" }}>
             <ul className="sidebar-menu tree main-menu">
-              {items.map((item) => {
-                return (
-                  <li
-                    onClick={() => {
-                      setPathSelect(item.path);
-                    }}
-                    className={
-                      window.location.pathname === item.path ||
-                      pathSelect === item.path
-                        ? "active"
-                        : ""
-                    }
-                    key={item.path}
-                  >
-                    <NavLink to={item.path}>
-                      <i className={item.icon}></i>
-                      <span>{item.name}</span>
-                    </NavLink>
-                  </li>
-                );
-              })}
+              {items
+                .filter((f) => f.show)
+                .map((item) => {
+                  return (
+                    <li
+                      onClick={() => {
+                        setPathSelect(item.path);
+                      }}
+                      className={
+                        window.location.pathname === item.path ||
+                        pathSelect === item.path
+                          ? "active"
+                          : ""
+                      }
+                      key={item.path}
+                    >
+                      <NavLink to={item.path}>
+                        <i className={item.icon}></i>
+                        <span>{item.name}</span>
+                      </NavLink>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         </div>

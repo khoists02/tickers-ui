@@ -58,6 +58,15 @@ const tickersSlice = createSlice({
     },
     getCloseByTickerIdsSuccess(state, action: PayloadAction<ITickerClose[]>) {
       state.tickersClose = action.payload;
+    },
+    addPredictionStart(state) {
+      state.loading = true;
+    },
+    addPredictionSuccess(state) {
+      state.loading = false;
+    },
+    addPredictionFail(state) {
+      state.loading = false;
     }
   },
 });

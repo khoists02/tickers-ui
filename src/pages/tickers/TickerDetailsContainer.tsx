@@ -15,8 +15,9 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../config/store";
 import {
   getTickerDetails,
-  getStockDataByTicker,
+  // getStockDataByTicker,
   getTickersBySics,
+  addFilterPredictionTicker,
 } from "./ducks/operators";
 import { IRootState } from "../../config/reducers";
 import { useSelector } from "react-redux";
@@ -25,9 +26,15 @@ import { EditTable, IColumn } from "../../components/Table/EditTable";
 import { Card } from "../../components/Card";
 import axios from "axios";
 import { formatDate } from "../../utils/date";
-import { ITickerClose } from "../../types/tickers";
-import { getCsrfToken } from "../auth/ducks/opertators";
+import {
+  IPredictionRequestAndResponse,
+  ITickerClose,
+} from "../../types/tickers";
 import DateRangePicker, { yyyyMMdd } from "../../components/DateRangePicker";
+import usePredictionsDropdown from "../../hooks/usePredictionsDropdown";
+import { Dropdown, IOption } from "../../components/Dropdown";
+import { ButtonLoading } from "../../components/ButtonLoading";
+import { getPrediction } from "../predictions/ducks/operators";
 
 const intervalSeconds = 12; // 5 times
 const initialCols = [
@@ -58,6 +65,9 @@ const TickerDetailsContainer: FC = () => {
   const { entity, loading, stocks, tickers, updatedUUId } = useSelector(
     (state: IRootState) => state.tickersReducer
   );
+  const { entity: predictionEntity } = useSelector(
+    (state: IRootState) => state.predictionsReducer
+  );
   const { token } = useSelector((state: IRootState) => state.authReducer);
   const intervalIdRef = useRef<NodeJS.Timeout>();
   const [count, setCount] = useState(-1);
@@ -67,14 +77,25 @@ const TickerDetailsContainer: FC = () => {
   const [cols, setCols] = useState<IColumn[]>(initialCols);
   const [selectedDate, setSelectedDate] = useState("");
   const [trigger, setTrigger] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedFilter, setSelectedFilter] = useState("WEEKLY");
 
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const predictionsOption = usePredictionsDropdown();
+  const [predictionId, setPredictionId] = useState("");
+  const [selectedPrediction, setSelectedPrediction] =
+    useState<IPredictionRequestAndResponse | null>(null);
 
   useEffect(() => {
-    if (!token) dispatch(getCsrfToken());
-  }, [dispatch, token]);
+    if (predictionId !== "") {
+      dispatch(getPrediction(predictionId));
+    }
+  }, [dispatch, predictionId]);
+
+  useEffect(() => {
+    setSelectedPrediction(predictionEntity);
+  }, [predictionEntity]);
 
   useEffect(() => {
     return () => {
@@ -248,20 +269,32 @@ const TickerDetailsContainer: FC = () => {
           <div className="col-lg-12">
             <Card title="Prepare Filters">
               <>
-                <div>
-                  <button
-                    onClick={() => {
-                      setSelectedFilter("DAILY");
+                <div className="d-flex">
+                  <Dropdown
+                    className="me-2"
+                    label="Predictions"
+                    option={predictionsOption}
+                    onChange={(item: IOption) => {
+                      setPredictionId(item.value);
                     }}
-                    type="button"
-                    className={`btn btn-primary${
-                      selectedFilter === "DAILY" ? "" : "-light"
-                    }`}
-                  >
-                    DAILY
-                  </button>
+                  />
 
-                  <button
+                  <ButtonLoading
+                    loading={loading}
+                    disabled={predictionId === "" || !selectedPrediction}
+                    name="Save Filter"
+                    onClick={() => {
+                      dispatch(
+                        addFilterPredictionTicker(
+                          predictionId,
+                          entity?.id || "",
+                          selectedPrediction as IPredictionRequestAndResponse
+                        )
+                      );
+                    }}
+                  />
+
+                  {/* <button
                     onClick={() => {
                       setSelectedFilter("WEEKLY");
                     }}
@@ -318,7 +351,7 @@ const TickerDetailsContainer: FC = () => {
                     }}
                   >
                     Filter
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="mt-2">
@@ -349,6 +382,7 @@ const TickerDetailsContainer: FC = () => {
               widthTile={300}
               title="Filter By Sic Description"
               subTitle="Search new value fields relative"
+              animated
             >
               <>
                 <div>

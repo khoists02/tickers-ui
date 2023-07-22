@@ -116,6 +116,7 @@ export const PredictionForm: FC = () => {
                   </label>
                   <div className="col-md-4">
                     <input
+                      placeholder="Prediction Name"
                       className="form-control"
                       value={model.name}
                       onChange={(e) => {
