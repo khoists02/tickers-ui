@@ -93,6 +93,7 @@ Waves
 @import '../css/skin_color.css';
 @import '../css/animate.css';
 @import '../../icons/font-awesome/css/font-awesome.css';
+@import '~react-resizable/css/styles.css';
 // @import '~react-datepicker/dist/react-datepicker.min.css';
 // @import '../../../../assets/icons/Ionicons/css/ionicons.css';
 // @import '../../../../assets/icons/themify-icons/themify-icons.css';
@@ -343,6 +344,36 @@ h4 {
       cursor: default;
       font-size: 14px;
       overflow: hidden;
+
+      &.border-r-0 {
+        border-right: 0;
+      }
     }
+  }
+}
+
+.box-container {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 776px;
+  z-index: 109;
+}
+
+.react-resizable-handle {
+  cursor: col-resize !important;
+  background-image: none !important;
+}
+
+.table-date-time,
+.table-input {
+  border: none;
+  width: 100%;
+  outline: none;
+  visibility: hidden;
+
+  &.focussed {
+    visibility: visible;
   }
 }
