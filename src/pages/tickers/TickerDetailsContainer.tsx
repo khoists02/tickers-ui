@@ -35,6 +35,7 @@ import usePredictionsDropdown from "../../hooks/usePredictionsDropdown";
 import { Dropdown, IOption } from "../../components/Dropdown";
 import { ButtonLoading } from "../../components/ButtonLoading";
 import { getPrediction } from "../predictions/ducks/operators";
+import { HistoryEditable } from "../../components/Table/HistoryEditable";
 
 const intervalSeconds = 12; // 5 times
 const initialCols = [
@@ -237,6 +238,9 @@ const TickerDetailsContainer: FC = () => {
     <BlockUI loading={loading}>
       <>
         <div className="row">
+          <div className="col-lg-12">
+            <HistoryEditable />
+          </div>
           <div className="col-lg-12">
             <Card title={entity?.name}>
               <>

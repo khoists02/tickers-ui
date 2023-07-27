@@ -25,22 +25,21 @@ const FiltersContainer: FC = () => {
     },
     {
       name: "startDate",
-      header: "Start Date",
+      header: "Start",
     },
     {
       name: "endDate",
-      header: "End Date",
+      header: "End",
     },
     {
       id: "actions",
       actions: [
         <i
-          className="fa fa-pencil trash px-2 cursor-pointer"
+          className="fa fa-folder-open  px-2 cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
           }}
         ></i>,
-        <i className="fa fa-trash text-danger cursor-pointer px-2"></i>,
       ],
     },
   ];
