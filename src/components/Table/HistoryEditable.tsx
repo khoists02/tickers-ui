@@ -1,100 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable react/jsx-key */
-import React, { FC, CSSProperties, useState } from "react";
-import * as uuid from "uuid";
+import React, { FC, CSSProperties, useState, useEffect, useRef } from "react";
 import { Resizable } from "react-resizable";
 import { ColDateTimeView } from "./Fields/ColDateTimeView";
 import { ColInputNumberView } from "./Fields/ColInputNumberView";
-import { IFilterResponse } from "../../types/filter";
+import {
+  IFilterResponse,
+  defaultFilterHistory,
+  headerCols,
+} from "../../types/filter";
+import { BoxContainer } from "./BoxContainer";
 
 interface IHistoryEditable {
   data: IFilterResponse[];
 }
 
 export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
-  const headerCols = [
-    {
-      id: uuid.v4(),
-      label: "Start Date",
-      show: true,
-      width: 150,
-      type: "dateTime",
-      field: "startDate",
-    },
-    {
-      id: uuid.v4(),
-      label: "End Date",
-      show: true,
-      width: 150,
-      type: "dateTime",
-      field: "endDate",
-    },
-    {
-      id: uuid.v4(),
-      label: "Steps",
-      show: true,
-      width: 150,
-      type: "number",
-      field: "steps",
-    },
-    {
-      id: uuid.v4(),
-      label: "Scale",
-      show: true,
-      width: 150,
-      type: "boolean",
-      field: "scale",
-    },
-    {
-      id: uuid.v4(),
-      label: "Test Size",
-      show: true,
-      width: 150,
-      type: "number",
-      field: "testSize",
-    },
-    {
-      id: uuid.v4(),
-      label: "Look Steps",
-      show: true,
-      width: 150,
-      type: "number",
-      field: "lookStep",
-    },
-    {
-      id: uuid.v4(),
-      label: "Epochs",
-      show: false,
-      width: 150,
-      type: "number",
-      field: "epochs",
-    },
-    {
-      id: uuid.v4(),
-      label: "Shuffle",
-      show: true,
-      width: 80,
-      type: "boolean",
-      field: "shuffle",
-    },
-    {
-      id: uuid.v4(),
-      label: "Batch Size",
-      show: false,
-      width: 150,
-      type: "number",
-      field: "batchSize",
-    },
-    {
-      id: uuid.v4(),
-      label: "Units",
-      show: false,
-      width: 150,
-      type: "number",
-      field: "units",
-    },
-  ];
+  const filterRef = useRef<HTMLElement>(null);
+  const [selectedId, setSelectedId] = useState("");
+  const [showBoxContainer, setShowBoxContainer] = useState(false);
+  const [histories, setHistories] = useState<IFilterResponse[]>([]);
   const styleTable = (width = 50): CSSProperties => {
     return {
       width,
@@ -105,6 +32,11 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
   };
   const [initCols, setInitCols] = useState(headerCols);
   const [showFilter, setShowFilter] = useState(false);
+  const [subs, setSubs] = useState<Array<{ id: string; open: boolean }>>([]);
+  useEffect(() => {
+    setHistories(data);
+  }, [data]);
+
   const handleUpdateCols = (colId: string): void => {
     const cloneCols = [...initCols];
 
@@ -117,8 +49,11 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
     setInitCols(cloneCols);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderCellByType = (col: any, value: any): React.ReactElement => {
+  const renderCellByType = (
+    col: any,
+    value: any,
+    readonly = false
+  ): React.ReactElement => {
     switch (col.type) {
       case "dateTime":
         return (
@@ -127,13 +62,13 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
             value={value}
             name="Name"
             colId={col.id}
-            readonly={col.id}
+            readonly={readonly}
           ></ColDateTimeView>
         );
       case "number":
         return (
           <ColInputNumberView
-            readonly={col.id}
+            readonly={readonly}
             validate={{
               max: 30,
               min: 1,
@@ -151,7 +86,7 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
         return value === true ? (
           <i className="fa fa-check text-success" />
         ) : (
-          <span></span>
+          <i className="fa fa-check " />
         );
 
       default:
@@ -159,14 +94,67 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
     }
   };
 
+  const handelAddDefaultRow = (): void => {
+    setHistories([...histories, defaultFilterHistory]);
+  };
+
+  useEffect(() => {
+    if (histories.length > 0) {
+      setSubs(
+        histories.map((x) => {
+          return {
+            id: x.id as string,
+            open: false,
+          };
+        })
+      );
+    }
+  }, [histories]);
+
+  const handleOpenSub = (id: string): void => {
+    const clone = [...subs];
+
+    const selected = clone.find((x) => x.id === id);
+
+    if (selected) {
+      selected.open = !selected.open;
+    }
+
+    setSubs(clone);
+  };
+
+  const handleClickOutside = (event: any): void => {
+    if (filterRef?.current && !filterRef.current?.contains(event.target)) {
+      setShowFilter(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterRef]);
+
   return (
     <div style={{ zIndex: 1 }}>
-      {/* <div className="box-container">Test</div> */}
+      {showBoxContainer && (
+        <BoxContainer
+          id={selectedId}
+          onClose={() => {
+            setSelectedId("");
+            setShowBoxContainer(false);
+          }}
+        />
+      )}
       <div
         className=""
         style={{ position: "sticky", height: 0, left: 0, zIndex: 100 }}
       >
-        <div className={`filters ${showFilter ? "show" : ""}`}>
+        <div
+          className={`filters ${showFilter ? "show" : ""}`}
+          ref={filterRef as any}
+        >
           <div className="filter-headers d-flex justify-content-end pe-2 cursor-pointer">
             <i
               onClick={() => {
@@ -202,14 +190,21 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
               <span className="text-bold text-success">Tickers</span>{" "}
               <i className="fa fa-arrow-circle-right cursor-pointer" />{" "}
               {data.length}
-              <i className="fa fa-plus cursor-pointer ms-2" />
+              <i
+                className="fa fa-plus cursor-pointer ms-2"
+                onClick={handelAddDefaultRow}
+              />
             </div>
             <div className={`header-table-view d-flex ps-3 pe-3 show`}>
+              <div
+                className="header-table-th show cursor-pointer"
+                style={styleTable(50)}
+              ></div>
               {initCols.map((col) => {
                 return (
                   <Resizable
                     transformScale={10}
-                    maxConstraints={[200, 42]}
+                    maxConstraints={[500, 42]}
                     minConstraints={[50, 42]}
                     width={col.width}
                     height={42}
@@ -237,7 +232,7 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
               })}
               <div
                 className="header-table-th show cursor-pointer"
-                style={styleTable(20)}
+                style={styleTable(50)}
               >
                 <div
                   className="text-overflow p-2 flexbox"
@@ -248,33 +243,61 @@ export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
                   <i className="fa fa-ellipsis-h" />
                 </div>
               </div>
+              <div
+                className="header-table-th show cursor-pointer"
+                style={styleTable(50)}
+              />
             </div>
-            {data.map((d) => {
+            {histories.map((d) => {
               return (
-                <div className="items d-flex ps-3 pe-3" key={d.id}>
-                  {initCols.map((row) => {
-                    return (
-                      <div
-                        className={`item ${row.show ? "show" : ""} `}
-                        style={styleTable(row.width)}
-                        key={row.id}
-                      >
-                        <div className="text-overflow p-2">
-                          {/* @ts-ignore */}
-                          {renderCellByType(row, d[row.field])}
+                <>
+                  <div className="items d-flex ps-3 pe-3" key={d.id}>
+                    <div
+                      className="item show d-flex align-items-center"
+                      style={styleTable(50)}
+                    >
+                      <i
+                        className="fa fa-arrow-circle-right cursor-pointer"
+                        onClick={() => {
+                          handleOpenSub(d.id as string);
+                        }}
+                      ></i>
+                    </div>
+                    {initCols.map((row) => {
+                      return (
+                        <div
+                          className={`item ${row.show ? "show" : ""} `}
+                          style={styleTable(row.width)}
+                          key={row.id}
+                        >
+                          <div className="text-overflow p-2">
+                            {/* @ts-ignore */}
+                            {renderCellByType(row, d[row.field], d.id !== "")}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                  {/* <div
-                    className="item show border-r-0"
-                    style={styleTable(20)}
-                  /> */}
-                  <div
-                    className="item show border-r-0"
-                    style={styleTable(20)}
-                  />
-                </div>
+                      );
+                    })}
+                    <div className="item show " style={styleTable(50)} />
+                    <div
+                      className="item show d-flex align-items-center justify-content-center"
+                      style={styleTable(50)}
+                    >
+                      <i
+                        onClick={() => {
+                          setSelectedId(d.id || "");
+                          setShowBoxContainer(true);
+                        }}
+                        className="fa fa-folder-open cursor-pointer"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                  {subs.find((x) => x.id === d.id)?.open && (
+                    <div className="sub p-3">
+                      <div>SUB</div>
+                    </div>
+                  )}
+                </>
               );
             })}
           </div>

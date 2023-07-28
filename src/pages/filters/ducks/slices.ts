@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ErrorMessage, PaginationResponse, initPageable } from "../../../types/generic";
-import { IFilterResponse } from "../../../types/filter";
+import { IFilterResponse, IHistoryDetails } from "../../../types/filter";
 
 const initialState = {
   loading: false,
@@ -9,6 +9,9 @@ const initialState = {
   // entity: null as IFilterResponse | null,
   updated: false,
   errorMessage: null as unknown as ErrorMessage,
+  entity: null as unknown as IFilterResponse,
+  exits: false as boolean,
+  history: null as unknown as IHistoryDetails,
 };
 
 const filtersSlice = createSlice({
@@ -31,31 +34,30 @@ const filtersSlice = createSlice({
       state.entities = [];
       state.pageable = initPageable;
     },
-    // createFilterStart(state) {
-    //   state.loading = true;
-    //   state.updated = false;
-    // },
-    // createFilterSuccess(state) {
-    //   state.loading = false;
-    //   state.updated = true;
-    // },
-    // createFilterFail(state, action: PayloadAction<ErrorMessage>) {
-    //   state.loading = false;
-    //   state.updated = false;
-    //   state.errorMessage = action.payload;
-    // },
     clearState: () => initialState,
-    // getDetailsStart(state) {
-    //   state.loading = true;
-    // },
-    // getDetailsSuccess(state, action: PayloadAction<IPredictionRequestAndResponse>) {
-    //   state.entity = action.payload;
-    //   state.loading = false;
-    // },
-    // getDetailsFail(state, action: PayloadAction<ErrorMessage>) {
-    //   state.loading = false;
-    //   state.errorMessage = action.payload;
-    // }
+    getDetailsStart(state) {
+      state.loading = true;
+    },
+    getDetailsSuccess(state, action: PayloadAction<IFilterResponse>) {
+      state.entity = action.payload;
+      state.loading = false;
+    },
+    getDetailsFail(state, action: PayloadAction<ErrorMessage>) {
+      state.loading = false;
+      state.errorMessage = action.payload;
+    },
+    checkFilterInHistorySuccess(state, action: PayloadAction<boolean>) {
+      state.exits = action.payload;
+    },
+    loadHistoryStart(state) {
+      state.loading = true;
+    },
+    loadHistorySuccess(state, action: PayloadAction<IHistoryDetails>) {
+      state.history = action.payload;
+    },
+    loadHistoryFail(state) {
+      state.loading = false;
+    }
   },
 });
 

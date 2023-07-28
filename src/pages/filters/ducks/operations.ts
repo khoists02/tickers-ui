@@ -3,7 +3,7 @@ import axios from "axios";
 import { AppThunk } from "../../../config/store";
 import { PaginationResponse } from "../../../types/generic";
 import { FiltersAction } from "./slices";
-import { IFilterResponse, ISearchFilter } from "../../../types/filter";
+import { IFilterResponse, IHistoryDetails, ISearchFilter } from "../../../types/filter";
 
 export const getFilters =
   (params?: ISearchFilter): AppThunk =>
@@ -51,14 +51,32 @@ export const getFilters =
       }
     };
 
-// export const getPrediction = (id: string): AppThunk =>
-//   async (dispatch) => {
-//     try {
-//       dispatch(PredictionsAction.getDetailsStart());
-//       const response = await axios.get(`/predictions/${id}`);
-//       dispatch(PredictionsAction.getDetailsSuccess(response.data as IPredictionRequestAndResponse));
-//     } catch (error) {
-//       // @ts-expect-error
-//       dispatch(PredictionsAction.getDetailsFail(error?.response?.data as ErrorMessage));
-//     }
-//   };
+export const getFilterDetails = (id: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      dispatch(FiltersAction.getDetailsStart());
+      const response = await axios.get(`/filters/${id}`);
+      dispatch(FiltersAction.getDetailsSuccess(response.data as IFilterResponse));
+    } catch (error) {
+      // @ts-expect-error
+      dispatch(FiltersAction.getDetailsFail(error?.response?.data as ErrorMessage));
+    }
+  };
+
+export const checkExistFilterInHistory = (id: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const response = await axios.get(`/predictions-history/check/${id}`);
+      dispatch(FiltersAction.checkFilterInHistorySuccess(response.data as boolean));
+    } catch (error) {
+    }
+  };
+
+export const loadHistoryByFilterId = (id: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const response = await axios.get(`/predictions-history/${id}`);
+      dispatch(FiltersAction.loadHistorySuccess(response.data as IHistoryDetails));
+    } catch (error) {
+    }
+  };

@@ -359,7 +359,19 @@ h4 {
   right: 0px;
   bottom: 0px;
   width: 776px;
-  z-index: 109;
+  z-index: 9999;
+  background: #ffffff;
+
+  h4,
+  h5,
+  h2,
+  h1,
+  h3,
+  p,
+  div,
+  span {
+    color: #333;
+  }
 }
 
 .react-resizable-handle {
