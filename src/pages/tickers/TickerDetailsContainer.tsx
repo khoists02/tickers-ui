@@ -36,6 +36,7 @@ import { Dropdown, IOption } from "../../components/Dropdown";
 import { ButtonLoading } from "../../components/ButtonLoading";
 import { getPrediction } from "../predictions/ducks/operators";
 import { HistoryEditable } from "../../components/Table/HistoryEditable";
+import { getFilters } from "../filters/ducks/operations";
 
 const intervalSeconds = 12; // 5 times
 const initialCols = [
@@ -69,6 +70,7 @@ const TickerDetailsContainer: FC = () => {
   const { entity: predictionEntity } = useSelector(
     (state: IRootState) => state.predictionsReducer
   );
+  const { entities } = useSelector((state: IRootState) => state.filtersReducer);
   const { token } = useSelector((state: IRootState) => state.authReducer);
   const intervalIdRef = useRef<NodeJS.Timeout>();
   const [count, setCount] = useState(-1);
@@ -99,12 +101,13 @@ const TickerDetailsContainer: FC = () => {
   }, [predictionEntity]);
 
   useEffect(() => {
+    dispatch(getFilters({ tickerId: params.ticker }));
     return () => {
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
       }
     };
-  }, []);
+  }, [params, dispatch]);
 
   useEffect(() => {
     dispatch(getTickerDetails(params.ticker));
@@ -239,7 +242,7 @@ const TickerDetailsContainer: FC = () => {
       <>
         <div className="row">
           <div className="col-lg-12">
-            <HistoryEditable />
+            <HistoryEditable data={entities} />
           </div>
           <div className="col-lg-12">
             <Card title={entity?.name}>

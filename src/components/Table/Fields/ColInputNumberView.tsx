@@ -9,6 +9,7 @@ interface IColInputNumberView {
     max: number;
     min: number;
   };
+  readonly: boolean;
 }
 
 export const ColInputNumberView: FC<IColInputNumberView> = ({
@@ -17,6 +18,7 @@ export const ColInputNumberView: FC<IColInputNumberView> = ({
   name,
   colId,
   validate,
+  readonly,
 }) => {
   const [focussed, setFocussed] = useState(false);
   const [selectedVal, setSelectedVal] = useState(value);
@@ -31,19 +33,21 @@ export const ColInputNumberView: FC<IColInputNumberView> = ({
           setFocussed(true);
         }}
       >
-        {!focussed && <span>{selectedVal}</span>}
-        <input
-          className={`table-input ${focussed ? "focussed" : ""}`}
-          value={selectedVal}
-          max={validate.max}
-          min={validate.min}
-          name={name}
-          type="number"
-          onChange={(e) => {
-            setSelectedVal(e.target.value);
-            onChange(e.target.value);
-          }}
-        />
+        {(!focussed || readonly) && <span>{selectedVal}</span>}
+        {!readonly && (
+          <input
+            className={`table-input ${focussed ? "focussed" : ""}`}
+            value={selectedVal}
+            max={validate.max}
+            min={validate.min}
+            name={name}
+            type="number"
+            onChange={(e) => {
+              setSelectedVal(e.target.value);
+              onChange(e.target.value);
+            }}
+          />
+        )}
       </div>
     </>
   );

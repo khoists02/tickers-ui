@@ -1,11 +1,18 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable react/jsx-key */
 import React, { FC, CSSProperties, useState } from "react";
 import * as uuid from "uuid";
 import { Resizable } from "react-resizable";
 import { ColDateTimeView } from "./Fields/ColDateTimeView";
 import { ColInputNumberView } from "./Fields/ColInputNumberView";
+import { IFilterResponse } from "../../types/filter";
 
-export const HistoryEditable: FC = () => {
+interface IHistoryEditable {
+  data: IFilterResponse[];
+}
+
+export const HistoryEditable: FC<IHistoryEditable> = ({ data }) => {
   const headerCols = [
     {
       id: uuid.v4(),
@@ -13,6 +20,7 @@ export const HistoryEditable: FC = () => {
       show: true,
       width: 150,
       type: "dateTime",
+      field: "startDate",
     },
     {
       id: uuid.v4(),
@@ -20,6 +28,7 @@ export const HistoryEditable: FC = () => {
       show: true,
       width: 150,
       type: "dateTime",
+      field: "endDate",
     },
     {
       id: uuid.v4(),
@@ -27,6 +36,7 @@ export const HistoryEditable: FC = () => {
       show: true,
       width: 150,
       type: "number",
+      field: "steps",
     },
     {
       id: uuid.v4(),
@@ -34,12 +44,15 @@ export const HistoryEditable: FC = () => {
       show: true,
       width: 150,
       type: "boolean",
+      field: "scale",
     },
     {
+      id: uuid.v4(),
       label: "Test Size",
       show: true,
       width: 150,
       type: "number",
+      field: "testSize",
     },
     {
       id: uuid.v4(),
@@ -47,6 +60,7 @@ export const HistoryEditable: FC = () => {
       show: true,
       width: 150,
       type: "number",
+      field: "lookStep",
     },
     {
       id: uuid.v4(),
@@ -54,6 +68,15 @@ export const HistoryEditable: FC = () => {
       show: false,
       width: 150,
       type: "number",
+      field: "epochs",
+    },
+    {
+      id: uuid.v4(),
+      label: "Shuffle",
+      show: true,
+      width: 80,
+      type: "boolean",
+      field: "shuffle",
     },
     {
       id: uuid.v4(),
@@ -61,6 +84,7 @@ export const HistoryEditable: FC = () => {
       show: false,
       width: 150,
       type: "number",
+      field: "batchSize",
     },
     {
       id: uuid.v4(),
@@ -68,6 +92,7 @@ export const HistoryEditable: FC = () => {
       show: false,
       width: 150,
       type: "number",
+      field: "units",
     },
   ];
   const styleTable = (width = 50): CSSProperties => {
@@ -93,29 +118,40 @@ export const HistoryEditable: FC = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderCellByType = (col: any): React.ReactElement => {
+  const renderCellByType = (col: any, value: any): React.ReactElement => {
     switch (col.type) {
       case "dateTime":
         return (
           <ColDateTimeView
             onChange={() => {}}
-            value={new Date().toISOString()}
+            value={value}
             name="Name"
             colId={col.id}
+            readonly={col.id}
           ></ColDateTimeView>
         );
       case "number":
         return (
           <ColInputNumberView
+            readonly={col.id}
             validate={{
               max: 30,
               min: 1,
             }}
             onChange={() => {}}
-            value="1"
+            value={
+              col.field === "testSize" ? parseFloat(value).toFixed(2) : value
+            }
             name={col.label}
             colId={col.id}
           />
+        );
+
+      case "boolean":
+        return value === true ? (
+          <i className="fa fa-check text-success" />
+        ) : (
+          <span></span>
         );
 
       default:
@@ -163,7 +199,10 @@ export const HistoryEditable: FC = () => {
         <div className="collection-group">
           <div className="group-item mb-3">
             <div className="name cursor-pointer">
-              Tickers <i className="fa fa-arrow-circle-right cursor-pointer" />
+              <span className="text-bold text-success">Tickers</span>{" "}
+              <i className="fa fa-arrow-circle-right cursor-pointer" />{" "}
+              {data.length}
+              <i className="fa fa-plus cursor-pointer ms-2" />
             </div>
             <div className={`header-table-view d-flex ps-3 pe-3 show`}>
               {initCols.map((col) => {
@@ -196,14 +235,6 @@ export const HistoryEditable: FC = () => {
                   </Resizable>
                 );
               })}
-              {/* <div
-                className="header-table-th show cursor-pointer"
-                style={styleTable(20)}
-              >
-                <div className="text-overflow p-2 flexbox">
-                  <i className="fa fa-plus"></i>
-                </div>
-              </div> */}
               <div
                 className="header-table-th show cursor-pointer"
                 style={styleTable(20)}
@@ -218,9 +249,9 @@ export const HistoryEditable: FC = () => {
                 </div>
               </div>
             </div>
-            {[1, 2, 3, 4].map((t) => {
+            {data.map((d) => {
               return (
-                <div className="items d-flex ps-3 pe-3" key={t}>
+                <div className="items d-flex ps-3 pe-3" key={d.id}>
                   {initCols.map((row) => {
                     return (
                       <div
@@ -229,7 +260,8 @@ export const HistoryEditable: FC = () => {
                         key={row.id}
                       >
                         <div className="text-overflow p-2">
-                          {renderCellByType(row)}
+                          {/* @ts-ignore */}
+                          {renderCellByType(row, d[row.field])}
                         </div>
                       </div>
                     );

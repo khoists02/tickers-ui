@@ -14,7 +14,7 @@ export const getFilters =
         let requestParams = {};
 
         if (params) {
-          const { search, size, page, mode } = params;
+          const { search, size, page, mode, tickerId } = params;
 
           if (mode) {
             requestParams = { ...requestParams, mode }
@@ -22,6 +22,10 @@ export const getFilters =
 
           if (search) {
             requestParams = { ...requestParams, searchKey: search }
+          }
+
+          if (tickerId) {
+            requestParams = { ...requestParams, tickerId }
           }
 
           if (size) {

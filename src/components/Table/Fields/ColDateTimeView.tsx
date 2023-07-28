@@ -7,6 +7,7 @@ interface IColDateTimeView {
   onChange: (val: Date | string) => void;
   name: string;
   colId: string;
+  readonly: boolean;
 }
 
 export const ColDateTimeView: FC<IColDateTimeView> = ({
@@ -14,6 +15,7 @@ export const ColDateTimeView: FC<IColDateTimeView> = ({
   onChange,
   name,
   colId,
+  readonly,
 }) => {
   const [focussed, setFocussed] = useState(false);
   const [selected, setSelected] = useState(
@@ -29,18 +31,23 @@ export const ColDateTimeView: FC<IColDateTimeView> = ({
           setFocussed(true);
         }}
       >
-        {!focussed && (
-          <span>{value ? format(new Date(selected), "yyyy-MM-dd") : ""}</span>
+        {(!focussed || readonly) && (
+          <span>
+            {value ? format(new Date(selected), "yyyy-MM-dd") : "No Value"}
+          </span>
         )}
-        <DatePicker
-          className={`table-date-time ${focussed ? "focussed" : ""}`}
-          selected={selected}
-          name={name}
-          onChange={(d) => {
-            setSelected(d as Date);
-            onChange(d as Date);
-          }}
-        ></DatePicker>
+        {!readonly && (
+          <DatePicker
+            className={`table-date-time ${focussed ? "focussed" : ""}`}
+            selected={selected}
+            name={name}
+            dateFormat="yyyy-MM-dd"
+            onChange={(d) => {
+              setSelected(d as Date);
+              onChange(d as Date);
+            }}
+          ></DatePicker>
+        )}
       </div>
     </>
   );
