@@ -93,6 +93,7 @@ Waves
 @import '../css/skin_color.css';
 @import '../css/animate.css';
 @import '../../icons/font-awesome/css/font-awesome.css';
+@import '~react-resizable/css/styles.css';
 // @import '~react-datepicker/dist/react-datepicker.min.css';
 // @import '../../../../assets/icons/Ionicons/css/ionicons.css';
 // @import '../../../../assets/icons/themify-icons/themify-icons.css';
@@ -249,4 +250,143 @@ h4 {
 
 .btn-fixed-w {
   width: 150px;
+}
+
+.filters {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  z-index: 100;
+  padding: 10px;
+  box-shadow: rgb(233, 233, 231) 0px -1px 0px;
+  border-left: 1px solid rgb(233, 233, 231);
+  background: #ffffff;
+  opacity: 1;
+  height: 500px;
+
+  &.show {
+    display: block;
+  }
+
+  >span {
+    color: #333333;
+  }
+
+  >i {
+    color: #e1e1e1;
+  }
+}
+
+.history-wrapper {
+  background: #ffffff;
+  width: 100%;
+  position: relative;
+  min-height: 500px;
+  max-width: 100%;
+  overflow-x: auto;
+
+
+  .collection-group {
+    width: 100vw;
+
+    .group-item {
+      width: 100vw;
+    }
+
+    .name {
+      width: 100vw;
+    }
+  }
+
+  .header-table-view {
+    width: 100vw;
+    box-shadow: white -3px 0px 0px,
+      rgb(233, 233, 231) 0px 1px 0px;
+    color: rgba(55, 53, 47, 0.65);
+    position: relative;
+
+    .header-table-th {
+      box-sizing: border-box;
+      position: relative;
+      line-height: 28px;
+      display: none;
+      user-select: none;
+
+      &:hover {
+        background-color: #d1d1d1;
+        color: #ffffff;
+      }
+
+      &.show {
+        display: block;
+      }
+    }
+  }
+
+  .items {
+    width: 100vw;
+    box-shadow: white -3px 0px 0px,
+      rgb(233, 233, 231) 0px 1px 0px;
+
+    .item {
+
+      &.show {
+        display: block;
+      }
+
+      display: none;
+      border-right: 1px solid rgb(238, 238, 237);
+      white-space: nowrap;
+      height: 32px;
+      min-height: 32px;
+      cursor: default;
+      font-size: 14px;
+      overflow: hidden;
+
+      &.border-r-0 {
+        border-right: 0;
+      }
+    }
+  }
+}
+
+.box-container {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 776px;
+  z-index: 9999;
+  background: #ffffff;
+
+  h4,
+  h5,
+  h2,
+  h1,
+  h3,
+  p,
+  div,
+  span {
+    color: #333;
+  }
+}
+
+.react-resizable-handle {
+  cursor: col-resize !important;
+  background-image: none !important;
+}
+
+.table-date-time,
+.table-input {
+  border: none;
+  width: 100%;
+  outline: none;
+  visibility: hidden;
+
+  &.focussed {
+    visibility: visible;
+  }
 }
